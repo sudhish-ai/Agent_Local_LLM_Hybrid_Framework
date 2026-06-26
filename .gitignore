@@ -1,0 +1,53 @@
+# SPDX-FileCopyrightText: 2026 Sudhish Singh
+# SPDX-License-Identifier: MIT
+# Owner: Sudhish Singh
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Secrets and local config
+.env
+.env.*
+*.pem
+*.key
+*.crt
+secrets/
+credentials/
+tokens/
+
+# Data - never commit real data
+data/
+datasets/
+hospital_data/
+patient_data/
+phi_data/
+tmp/
