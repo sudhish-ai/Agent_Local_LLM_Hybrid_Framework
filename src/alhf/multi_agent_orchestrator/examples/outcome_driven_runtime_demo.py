@@ -65,6 +65,16 @@ from alhf.multi_agent_orchestrator.planner.domain_packs.domain_pack_registry imp
     DomainPackRegistry,
 )
 
+def prettify(value: str | None) -> str:
+    if not value:
+        return "N/A"
+
+    return (
+        value
+        .replace("_", " ")
+        .title()
+    )
+
 def print_banner() -> None:
     print(
         "\n"
@@ -211,49 +221,187 @@ async def main() -> None:
     )
 
     print(
-        "\n=== EXECUTION RESULT ==="
+        "\n"
+        "====================================================\n"
+        "EXECUTION SUMMARY\n"
+        "===================================================="
     )
 
     print(
-        f"Workflow Id   : "
-        f"{workflow_result.workflow_id}"
+        f"Workflow Id      : {workflow_result.workflow_id}"
     )
 
     print(
-        f"Workflow Type : "
-        f"{workflow_result.workflow_type}"
+        f"Workflow Type    : {workflow_result.workflow_type}"
     )
 
     print(
-        f"Status        : "
-        f"{workflow_result.final_status}"
+        f"Execution Status : {workflow_result.final_status}"
     )
 
     print(
-        "\n=== BUSINESS OUTCOME ==="
+        f"Tasks Executed   : {len(workflow_result.results)}"
     )
+
+    print(
+        "\n"
+        "====================================================\n"
+        "BUSINESS FINDINGS\n"
+        "===================================================="
+    )
+
+    repository_result = None
+    build_result = None
+    root_cause_result = None
 
     for result in workflow_result.results:
+        task_id = result["task_id"]
+
+        if task_id == "repository_inspection":
+            repository_result = result["result"]
+
+        elif task_id == "build_log_analysis":
+            build_result = result["result"]
+
+        elif task_id == "root_cause_report_generation":
+            root_cause_result = result["result"]
+
+    if repository_result:
         print(
-            f"\nTask : {result['task_id']}"
+            "\nREPOSITORY INSPECTION"
         )
 
         print(
-            f"Result : {result['result']}"
+            "----------------------------------------------------"
         )
+
+        print(
+            f"Repository State : "
+            f"{prettify(repository_result.get('repository_state'))}"
+        )
+
+        print(
+            f"Language         : "
+            f"{prettify(repository_result.get('primary_language'))}"
+        )
+
+        print(
+            f"Architecture     : "
+            f"{prettify(repository_result.get('architecture_pattern'))}"
+        )
+
+    if build_result:
+        print(
+            "\nBUILD FAILURE ANALYSIS"
+        )
+
+        print(
+            "----------------------------------------------------"
+        )
+
+        print(
+            f"Build Status     : "
+            f"{prettify(build_result.get('build_status'))}"
+        )
+
+        print(
+            f"Failure Category : "
+            f"{prettify(build_result.get('failure_category'))}"
+        )
+
+        print(
+            f"Root Cause       : "
+            f"{prettify(build_result.get('suspected_root_cause'))}"
+        )
+
+    if root_cause_result:
+        print(
+            "\nROOT CAUSE REPORT"
+        )
+
+        print(
+            "----------------------------------------------------"
+        )
+
+        print(
+            f"Impact           : "
+            f"{prettify(root_cause_result.get('impact_assessment'))}"
+        )
+
+        print(
+            f"Priority         : "
+            f"{prettify(root_cause_result.get('priority'))}"
+        )
+
+        print(
+            "\nRecommended Actions"
+        )
+
+        for action in (
+                root_cause_result.get(
+                    "recommended_actions",
+                    [],
+                )
+        ):
+            print(
+                f"  ✓ {action}"
+            )
 
     print(
-        "\n===================================================="
+        "\n"
+        "====================================================\n"
+        "OUTCOME SUMMARY\n"
+        "===================================================="
     )
 
     print(
-        "Outcome Successfully Achieved"
+        f"Customer Outcome : {outcome_request.goal}"
+    )
+
+    print(
+        f"Intent           : {planning_result.intent}"
+    )
+
+    print(
+        f"Domain           : {planning_result.domain}"
+    )
+
+    print(
+        f"Strategy         : {planning_result.strategy}"
+    )
+
+    print(
+        "\nWorkflow"
+    )
+
+    print(
+        "Repository Inspection"
+    )
+
+    print("        ↓")
+
+    print(
+        "Build Log Analysis"
+    )
+
+    print("        ↓")
+
+    print(
+        "Root Cause Report Generation"
+    )
+
+    print(
+        "\n"
+        "===================================================="
+    )
+
+    print(
+        "OUTCOME SUCCESSFULLY ACHIEVED"
     )
 
     print(
         "===================================================="
     )
-
 
 if __name__ == "__main__":
     asyncio.run(main())
