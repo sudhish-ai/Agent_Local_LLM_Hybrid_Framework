@@ -1,0 +1,8 @@
+{
+  "domain_id": "travel",
+  "capability_ids": [
+    "hotel_search",
+    "flight_search",
+    "trip_planning"
+  ]
+}
