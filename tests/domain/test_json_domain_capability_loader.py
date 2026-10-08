@@ -261,3 +261,161 @@ def test_domain_id_loaded_correctly(
         mapping.domain_id
         == "healthcare"
     )
+
+
+def test_mandatory_capability_ids_loaded_correctly(
+    tmp_path: Path,
+) -> None:
+    loader = (
+        JsonDomainCapabilityLoader()
+    )
+
+    source_file = (
+        tmp_path
+        / "capabilities.json"
+    )
+
+    source_file.write_text(
+        """
+        {
+            "domain_id": "banking",
+            "capability_ids": [
+                "api_contract_design",
+                "fraud_validation",
+                "compliance_validation"
+            ],
+            "mandatory_capability_ids": [
+                "fraud_validation",
+                "compliance_validation"
+            ]
+        }
+        """,
+        encoding="utf-8",
+    )
+
+    result = loader.load(
+        source_file
+    )
+
+    mapping = result.loaded_items[0]
+
+    assert (
+        mapping.mandatory_capability_ids
+        == (
+            "fraud_validation",
+            "compliance_validation",
+        )
+    )
+
+
+def test_empty_mandatory_capability_ids_supported(
+    tmp_path: Path,
+) -> None:
+    loader = (
+        JsonDomainCapabilityLoader()
+    )
+
+    source_file = (
+        tmp_path
+        / "capabilities.json"
+    )
+
+    source_file.write_text(
+        """
+        {
+            "domain_id": "travel",
+            "capability_ids": [
+                "hotel_search",
+                "flight_search"
+            ],
+            "mandatory_capability_ids": []
+        }
+        """,
+        encoding="utf-8",
+    )
+
+    result = loader.load(
+        source_file
+    )
+
+    mapping = result.loaded_items[0]
+
+    assert (
+        mapping.mandatory_capability_count
+        == 0
+    )
+
+
+def test_loader_backward_compatible_without_mandatory_capability_ids(
+    tmp_path: Path,
+) -> None:
+    loader = (
+        JsonDomainCapabilityLoader()
+    )
+
+    source_file = (
+        tmp_path
+        / "capabilities.json"
+    )
+
+    source_file.write_text(
+        """
+        {
+            "domain_id": "travel",
+            "capability_ids": [
+                "hotel_search"
+            ]
+        }
+        """,
+        encoding="utf-8",
+    )
+
+    result = loader.load(
+        source_file
+    )
+
+    mapping = result.loaded_items[0]
+
+    assert (
+        mapping.mandatory_capability_count
+        == 0
+    )
+
+
+def test_is_mandatory_returns_true_for_mandatory_capability(
+    tmp_path: Path,
+) -> None:
+    loader = (
+        JsonDomainCapabilityLoader()
+    )
+
+    source_file = (
+        tmp_path
+        / "capabilities.json"
+    )
+
+    source_file.write_text(
+        """
+        {
+            "domain_id": "banking",
+            "capability_ids": [
+                "api_contract_design",
+                "fraud_validation"
+            ],
+            "mandatory_capability_ids": [
+                "fraud_validation"
+            ]
+        }
+        """,
+        encoding="utf-8",
+    )
+
+    result = loader.load(
+        source_file
+    )
+
+    mapping = result.loaded_items[0]
+
+    assert mapping.is_mandatory(
+        "fraud_validation"
+    )

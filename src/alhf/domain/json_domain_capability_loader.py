@@ -97,6 +97,12 @@ class JsonDomainCapabilityLoader(
             capability_ids=tuple(
                 data["capability_ids"],
             ),
+            mandatory_capability_ids=tuple(
+                data.get(
+                    "mandatory_capability_ids",
+                    [],
+                ),
+            ),
         )
 
         return LoaderResult(

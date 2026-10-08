@@ -9,6 +9,7 @@
 # Responsibilities:
 # - Represent domain-to-capability mappings.
 # - Define capability ownership per domain.
+# - Define mandatory domain capabilities.
 # - Provide immutable relationship metadata.
 #
 # Must Not:
@@ -22,19 +23,6 @@
 # - First intelligence relationship layer.
 # - Connects domains to capabilities.
 # - Acts as foundational knowledge structure.
-#
-# Reuse Value:
-# - Travel → Hotel Search
-# - Travel → Flight Search
-# - Healthcare → Provider Search
-# - Healthcare → Appointment Booking
-# - Future domain onboarding
-#
-# Future Extensibility:
-# - Confidence scoring.
-# - Capability priorities.
-# - Conditional routing.
-# - Outcome-based ranking.
 #
 # Design Principle:
 # Think Hard Once. Implement Many Times.
@@ -58,7 +46,14 @@ class DomainCapabilityMapping:
 
     capability_ids: tuple[str, ...]
 
-    def __post_init__(self) -> None:
+    mandatory_capability_ids: tuple[
+        str,
+        ...
+    ] = ()
+
+    def __post_init__(
+        self,
+    ) -> None:
         """
         Validate mapping contract.
         """
@@ -74,11 +69,31 @@ class DomainCapabilityMapping:
                 "must be provided."
             )
 
-        for capability_id in self.capability_ids:
-
+        for capability_id in (
+            self.capability_ids
+        ):
             if not capability_id.strip():
                 raise ValueError(
                     "capability_id cannot be empty."
+                )
+
+        for capability_id in (
+            self.mandatory_capability_ids
+        ):
+            if not capability_id.strip():
+                raise ValueError(
+                    "mandatory capability "
+                    "cannot be empty."
+                )
+
+            if capability_id not in (
+                self.capability_ids
+            ):
+                raise ValueError(
+                    "Mandatory capability "
+                    f"'{capability_id}' "
+                    "must exist in "
+                    "capability_ids."
                 )
 
     @property
@@ -93,6 +108,18 @@ class DomainCapabilityMapping:
             self.capability_ids
         )
 
+    @property
+    def mandatory_capability_count(
+        self,
+    ) -> int:
+        """
+        Number of mandatory capabilities.
+        """
+
+        return len(
+            self.mandatory_capability_ids
+        )
+
     def contains_capability(
         self,
         capability_id: str,
@@ -105,4 +132,18 @@ class DomainCapabilityMapping:
         return (
             capability_id
             in self.capability_ids
+        )
+
+    def is_mandatory(
+        self,
+        capability_id: str,
+    ) -> bool:
+        """
+        Determine whether a capability
+        is mandatory for the domain.
+        """
+
+        return (
+            capability_id
+            in self.mandatory_capability_ids
         )

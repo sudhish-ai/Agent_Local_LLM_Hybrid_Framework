@@ -4,5 +4,6 @@
     "hotel_search",
     "flight_search",
     "trip_planning"
-  ]
+  ],
+  "mandatory_capability_ids": []
 }
