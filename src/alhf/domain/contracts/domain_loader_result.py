@@ -43,7 +43,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from dataclasses import field
 
-from src.alhf.domain.contracts.domain_definition import (
+from alhf.domain.contracts.domain_definition import (
     DomainDefinition,
 )
 

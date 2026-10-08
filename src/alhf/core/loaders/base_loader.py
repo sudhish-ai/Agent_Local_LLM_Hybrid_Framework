@@ -46,7 +46,7 @@ from abc import abstractmethod
 from typing import Generic
 from typing import TypeVar
 
-from src.alhf.core.contracts.loader_result import (
+from alhf.core.contracts.loader_result import (
     LoaderResult,
 )
 

@@ -36,16 +36,16 @@
 
 from __future__ import annotations
 
-from src.alhf.capability.capability_selection_engine import (
+from alhf.capability.capability_selection_engine import (
     CapabilitySelectionEngine,
 )
-from src.alhf.capability.contracts.capability_definition import (
+from alhf.capability.contracts.capability_definition import (
     CapabilityDefinition,
 )
-from src.alhf.domain.domain_capability_resolver import (
+from alhf.domain.domain_capability_resolver import (
     DomainCapabilityResolver,
 )
-from src.alhf.intent.intent_capability_resolver import (
+from alhf.intent.intent_capability_resolver import (
     IntentCapabilityResolver,
 )
 

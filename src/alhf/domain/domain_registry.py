@@ -38,8 +38,8 @@
 
 from __future__ import annotations
 
-from src.alhf.core.registry.base_registry import BaseRegistry
-from src.alhf.domain.contracts.domain_definition import (
+from alhf.core.registry.base_registry import BaseRegistry
+from alhf.domain.contracts.domain_definition import (
     DomainDefinition,
 )
 
