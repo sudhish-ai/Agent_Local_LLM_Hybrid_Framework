@@ -27,13 +27,13 @@
 
 from __future__ import annotations
 
-from src.alhf.capability.capability_registry import (
+from alhf.capability.capability_registry import (
     CapabilityRegistry,
 )
-from src.alhf.capability.contracts.capability_definition import (
+from alhf.capability.contracts.capability_definition import (
     CapabilityDefinition,
 )
-from src.alhf.intent.intent_capability_registry import (
+from alhf.intent.intent_capability_registry import (
     IntentCapabilityRegistry,
 )
 

@@ -39,10 +39,10 @@
 
 from __future__ import annotations
 
-from src.alhf.capability.contracts.capability_definition import (
+from alhf.capability.contracts.capability_definition import (
     CapabilityDefinition,
 )
-from src.alhf.core.registry.base_registry import (
+from alhf.core.registry.base_registry import (
     BaseRegistry,
 )
 

@@ -39,10 +39,10 @@
 
 from __future__ import annotations
 
-from src.alhf.core.registry.base_registry import (
+from alhf.core.registry.base_registry import (
     BaseRegistry,
 )
-from src.alhf.domain.contracts.domain_capability_mapping import (
+from alhf.domain.contracts.domain_capability_mapping import (
     DomainCapabilityMapping,
 )
 

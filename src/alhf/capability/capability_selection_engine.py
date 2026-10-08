@@ -42,10 +42,10 @@
 
 from __future__ import annotations
 
-from src.alhf.capability.contracts.capability_definition import (
+from alhf.capability.contracts.capability_definition import (
     CapabilityDefinition,
 )
-from src.alhf.domain.contracts.domain_capability_mapping import (
+from alhf.domain.contracts.domain_capability_mapping import (
     DomainCapabilityMapping,
 )
 

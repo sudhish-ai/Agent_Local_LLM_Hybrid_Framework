@@ -37,13 +37,13 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from src.alhf.core.contracts.loader_result import (
+from alhf.core.contracts.loader_result import (
     LoaderResult,
 )
-from src.alhf.core.loaders.base_loader import (
+from alhf.core.loaders.base_loader import (
     BaseLoader,
 )
-from src.alhf.intent.contracts.intent_capability_mapping import (
+from alhf.intent.contracts.intent_capability_mapping import (
     IntentCapabilityMapping,
 )
 

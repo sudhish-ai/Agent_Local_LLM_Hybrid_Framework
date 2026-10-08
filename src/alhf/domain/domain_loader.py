@@ -42,13 +42,13 @@ import json
 from pathlib import Path
 from typing import Any
 
-from src.alhf.core.contracts.loader_result import (
+from alhf.core.contracts.loader_result import (
     LoaderResult,
 )
-from src.alhf.core.loaders.base_loader import (
+from alhf.core.loaders.base_loader import (
     BaseLoader,
 )
-from src.alhf.domain.contracts.domain_definition import (
+from alhf.domain.contracts.domain_definition import (
     DomainDefinition,
 )
 

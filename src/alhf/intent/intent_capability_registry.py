@@ -25,7 +25,7 @@
 
 from __future__ import annotations
 
-from src.alhf.intent.contracts.intent_capability_mapping import (
+from alhf.intent.contracts.intent_capability_mapping import (
     IntentCapabilityMapping,
 )
 
