@@ -121,28 +121,28 @@ class HotelSearchAgent(
             activity=(
                 "Validating destination..."
             ),
-            duration_seconds=20,
+            duration_seconds=5,
         )
 
         await self._show_progress(
             activity=(
                 "Searching Goa hotel inventory..."
             ),
-            duration_seconds=20,
+            duration_seconds=5,
         )
 
         await self._show_progress(
             activity=(
                 "Applying customer preferences..."
             ),
-            duration_seconds=20,
+            duration_seconds=5,
         )
 
         await self._show_progress(
             activity=(
                 "Ranking candidate properties..."
             ),
-            duration_seconds=20,
+            duration_seconds=5,
         )
 
         return AgentResponse(

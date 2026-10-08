@@ -55,6 +55,41 @@ from alhf.multi_agent_orchestrator.scheduler.in_memory_scheduler import (
     InMemoryScheduler,
 )
 
+from pathlib import Path
+
+from alhf.capability.capability_registry import (
+    CapabilityRegistry,
+)
+from alhf.capability.capability_runtime import (
+    CapabilityRuntime,
+)
+from alhf.capability.capability_selection_engine import (
+    CapabilitySelectionEngine,
+)
+from alhf.capability.json_capability_definition_loader import (
+    JsonCapabilityDefinitionLoader,
+)
+
+from alhf.domain.domain_capability_registry import (
+    DomainCapabilityRegistry,
+)
+from alhf.domain.domain_capability_resolver import (
+    DomainCapabilityResolver,
+)
+from alhf.domain.json_domain_capability_loader import (
+    JsonDomainCapabilityLoader,
+)
+
+from alhf.intent.intent_capability_registry import (
+    IntentCapabilityRegistry,
+)
+from alhf.intent.intent_capability_resolver import (
+    IntentCapabilityResolver,
+)
+from alhf.intent.json_intent_capability_loader import (
+    JsonIntentCapabilityLoader,
+)
+
 
 def print_banner() -> None:
     print(

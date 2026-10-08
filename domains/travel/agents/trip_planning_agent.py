@@ -121,35 +121,35 @@ class TripPlanningAgent(
             activity=(
                 "Building travel itinerary..."
             ),
-            duration_seconds=20,
+            duration_seconds=5,
         )
 
         await self._show_progress(
             activity=(
                 "Analyzing local attractions..."
             ),
-            duration_seconds=20,
+            duration_seconds=5,
         )
 
         await self._show_progress(
             activity=(
                 "Planning daily activities..."
             ),
-            duration_seconds=20,
+            duration_seconds=5,
         )
 
         await self._show_progress(
             activity=(
                 "Generating travel recommendations..."
             ),
-            duration_seconds=20,
+            duration_seconds=5,
         )
 
         await self._show_progress(
             activity=(
                 "Preparing travel package..."
             ),
-            duration_seconds=20,
+            duration_seconds=5,
         )
 
         return AgentResponse(

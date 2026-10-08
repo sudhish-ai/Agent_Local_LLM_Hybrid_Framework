@@ -121,35 +121,35 @@ class HotelBookingAgent(
             activity=(
                 "Validating selected hotel..."
             ),
-            duration_seconds=20,
+            duration_seconds=5,
         )
 
         await self._show_progress(
             activity=(
                 "Checking room inventory..."
             ),
-            duration_seconds=20,
+            duration_seconds=5,
         )
 
         await self._show_progress(
             activity=(
                 "Creating reservation..."
             ),
-            duration_seconds=20,
+            duration_seconds=5,
         )
 
         await self._show_progress(
             activity=(
                 "Generating booking reference..."
             ),
-            duration_seconds=20,
+            duration_seconds=5,
         )
 
         await self._show_progress(
             activity=(
                 "Preparing customer confirmation..."
             ),
-            duration_seconds=20,
+            duration_seconds=5,
         )
 
         return AgentResponse(
