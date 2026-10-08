@@ -3,14 +3,14 @@
 # Owner: Sudhish Singh
 #
 # Purpose:
-# Loads DomainCapabilityMapping instances
+# Loads IntentCapabilityMapping instances
 # from JSON knowledge assets.
 #
 # Responsibilities:
 # - Read JSON knowledge assets.
 # - Deserialize JSON content.
-# - Create DomainCapabilityMapping.
-# - Return LoaderResult[DomainCapabilityMapping].
+# - Create IntentCapabilityMapping objects.
+# - Return LoaderResult[IntentCapabilityMapping].
 #
 # Must Not:
 # - Perform capability selection.
@@ -22,12 +22,12 @@
 # Architectural Position:
 # - JSON knowledge adapter.
 # - First implementation of loading
-#   DomainCapabilityMapping knowledge assets.
+#   IntentCapabilityMapping knowledge assets.
 #
 # Future Extensibility:
-# - DatabaseDomainCapabilityLoader
-# - ApiDomainCapabilityLoader
-# - LearningStoreDomainCapabilityLoader
+# - DatabaseIntentCapabilityLoader
+# - ApiIntentCapabilityLoader
+# - LearningStoreIntentCapabilityLoader
 #
 # Design Principle:
 # Think Hard Once. Implement Many Times.
@@ -43,19 +43,19 @@ from src.alhf.core.contracts.loader_result import (
 from src.alhf.core.loaders.base_loader import (
     BaseLoader,
 )
-from src.alhf.domain.contracts.domain_capability_mapping import (
-    DomainCapabilityMapping,
+from src.alhf.intent.contracts.intent_capability_mapping import (
+    IntentCapabilityMapping,
 )
 
 
-class JsonDomainCapabilityLoader(
+class JsonIntentCapabilityLoader(
     BaseLoader[
-        DomainCapabilityMapping,
+        IntentCapabilityMapping,
         Path,
     ]
 ):
     """
-    Loads DomainCapabilityMapping instances
+    Loads IntentCapabilityMapping instances
     from JSON knowledge assets.
     """
 
@@ -63,10 +63,10 @@ class JsonDomainCapabilityLoader(
         self,
         source: Path,
     ) -> LoaderResult[
-        DomainCapabilityMapping
+        IntentCapabilityMapping
     ]:
         """
-        Load a DomainCapabilityMapping
+        Load intent capability mappings
         from a JSON knowledge asset.
         """
 
@@ -74,7 +74,10 @@ class JsonDomainCapabilityLoader(
 
         if not source.exists():
             warning_messages.append(
-                f"Source path does not exist: {source}"
+                (
+                    "Source path does not exist: "
+                    f"{source}"
+                )
             )
 
             return LoaderResult(
@@ -92,21 +95,22 @@ class JsonDomainCapabilityLoader(
                 file_handle,
             )
 
-        mapping = DomainCapabilityMapping(
-            domain_id=data["domain_id"],
-            capability_ids=tuple(
-                data["capability_ids"],
-            ),
-            mandatory_capability_ids=tuple(
-                data.get(
-                    "mandatory_capability_ids",
-                    [],
+        mappings = tuple(
+            IntentCapabilityMapping(
+                intent_id=item[
+                    "intent_id"
+                ],
+                capability_ids=tuple(
+                    item[
+                        "capability_ids"
+                    ]
                 ),
-            ),
+            )
+            for item in data[
+                "intent_capability_mappings"
+            ]
         )
 
         return LoaderResult(
-            loaded_items=(
-                mapping,
-            ),
+            loaded_items=mappings,
         )
