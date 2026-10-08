@@ -42,6 +42,9 @@ from alhf.capability.capability_selection_engine import (
 from alhf.capability.contracts.capability_definition import (
     CapabilityDefinition,
 )
+from alhf.domain.domain_capability_registry import (
+    DomainCapabilityRegistry,
+)
 from alhf.domain.domain_capability_resolver import (
     DomainCapabilityResolver,
 )
@@ -73,6 +76,9 @@ class CapabilityRuntime:
         domain_capability_resolver: (
             DomainCapabilityResolver
         ),
+        domain_capability_registry: (
+            DomainCapabilityRegistry
+        ),
         capability_selection_engine: (
             CapabilitySelectionEngine
         ),
@@ -83,6 +89,10 @@ class CapabilityRuntime:
 
         self._domain_capability_resolver = (
             domain_capability_resolver
+        )
+
+        self._domain_capability_registry = (
+            domain_capability_registry
         )
 
         self._capability_selection_engine = (
@@ -127,15 +137,15 @@ class CapabilityRuntime:
         )
 
         domain_mapping = (
-            self._domain_capability_resolver
-            .resolve(
+            self._domain_capability_registry
+            .get(
                 domain_id,
             )
         )
 
         domain_capabilities = (
             self._domain_capability_resolver
-            .resolve_capabilities(
+            .resolve(
                 domain_id,
             )
         )
