@@ -23,6 +23,8 @@ from __future__ import annotations
 
 import asyncio
 
+import time
+
 from domains.travel.agents.hotel_booking_agent import (
     HotelBookingAgent,
 )
@@ -156,8 +158,148 @@ async def main() -> None:
         f"Goal: {customer_goal}"
     )
 
+
     print(
-        "\n[STEP 4] Building Workflow..."
+        "\n[STEP 4] Building Capability Intelligence..."
+    )
+
+    capability_registry = (
+        CapabilityRegistry()
+    )
+
+    intent_registry = (
+        IntentCapabilityRegistry()
+    )
+
+    domain_registry = (
+        DomainCapabilityRegistry()
+    )
+
+    capability_loader = (
+        JsonCapabilityDefinitionLoader()
+    )
+
+    capability_result = (
+        capability_loader.load(
+            Path(
+                "domains/travel/"
+                "capability_definitions.json"
+            )
+        )
+    )
+
+    for capability in (
+            capability_result.loaded_items
+    ):
+        capability_registry.register(
+            capability
+        )
+
+    domain_loader = (
+        JsonDomainCapabilityLoader()
+    )
+
+    domain_result = (
+        domain_loader.load(
+            Path(
+                "domains/travel/"
+                "capabilities.json"
+            )
+        )
+    )
+
+    for mapping in (
+            domain_result.loaded_items
+    ):
+        domain_registry.register(
+            mapping
+        )
+
+    intent_loader = (
+        JsonIntentCapabilityLoader()
+    )
+
+    intent_result = (
+        intent_loader.load(
+            Path(
+                "domains/travel/"
+                "intents.json"
+            )
+        )
+    )
+
+    for mapping in (
+            intent_result.loaded_items
+    ):
+        intent_registry.register(
+            mapping
+        )
+
+    capability_runtime = (
+        CapabilityRuntime(
+            intent_capability_resolver=(
+                IntentCapabilityResolver(
+                    capability_registry=
+                    capability_registry,
+                    intent_capability_registry=
+                    intent_registry,
+                )
+            ),
+            domain_capability_resolver=(
+                DomainCapabilityResolver(
+                    capability_registry=
+                    capability_registry,
+                    domain_capability_registry=
+                    domain_registry,
+                )
+            ),
+            domain_capability_registry=(
+                domain_registry
+            ),
+            capability_selection_engine=(
+                CapabilitySelectionEngine()
+            ),
+        )
+    )
+
+    selected_capabilities = (
+        capability_runtime
+        .select_capabilities(
+            intent_id=
+            "hotel_booking",
+            domain_id=
+            "travel",
+        )
+    )
+
+    print(
+        "[SUCCESS] Capability "
+        "Runtime initialized."
+    )
+
+    print(
+        f"Capabilities Loaded : "
+        f"{capability_registry.count()}"
+    )
+
+    print(
+        "\nSelected Capabilities:"
+    )
+
+    for capability in (
+            selected_capabilities
+    ):
+        print(
+            f"  - "
+            f"{capability.capability_id}"
+        )
+
+    print("======="*20)
+
+    time.sleep(10)
+
+    print(
+        "\n[STEP 5] Building Workflow..."
     )
 
     workflow = WorkflowDefinition(
@@ -217,7 +359,7 @@ async def main() -> None:
     )
 
     print(
-        "\n[STEP 5] Building Executors..."
+        "\n[STEP 6] Building Executors..."
     )
 
     task_executor = TaskExecutor(
@@ -235,7 +377,7 @@ async def main() -> None:
     )
 
     print(
-        "\n[STEP 6] Executing Travel Workflow..."
+        "\n[STEP 7] Executing Travel Workflow..."
     )
 
     workflow_result = (
