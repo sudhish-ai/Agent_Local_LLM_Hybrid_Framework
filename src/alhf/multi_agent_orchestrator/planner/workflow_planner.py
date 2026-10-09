@@ -41,6 +41,9 @@ from alhf.multi_agent_orchestrator.planner.strategy_selector import (
     StrategySelector,
 )
 
+from alhf.capability.capability_runtime import (
+    CapabilityRuntime,
+)
 
 class WorkflowPlanner:
     """
@@ -48,18 +51,33 @@ class WorkflowPlanner:
     """
 
     def __init__(
-        self,
-        intent_detector: IntentDetector,
-        domain_detector: DomainDetector,
-        strategy_selector: StrategySelector,
+            self,
+            intent_detector: IntentDetector,
+            domain_detector: DomainDetector,
+            strategy_selector: StrategySelector,
+            capability_runtime: (
+                    CapabilityRuntime | None
+            ) = None,
     ) -> None:
-        self._intent_detector = intent_detector
-        self._domain_detector = domain_detector
-        self._strategy_selector = strategy_selector
+        self._intent_detector = (
+            intent_detector
+        )
+
+        self._domain_detector = (
+            domain_detector
+        )
+
+        self._strategy_selector = (
+            strategy_selector
+        )
+
+        self._capability_runtime = (
+            capability_runtime
+        )
 
     def plan(
-        self,
-        outcome_request: OutcomeRequest,
+            self,
+            outcome_request: OutcomeRequest,
     ) -> PlanningResult:
         intent = self._intent_detector.detect(
             outcome_request,
@@ -73,6 +91,26 @@ class WorkflowPlanner:
             intent,
             domain,
         )
+
+        selected_capabilities: tuple[
+            str,
+            ...
+        ] = ()
+
+        if (
+                self._capability_runtime
+                is not None
+        ):
+            selected_capabilities = tuple(
+                capability.capability_id
+                for capability in (
+                    self._capability_runtime
+                    .select_capabilities(
+                        intent.intent,
+                        domain,
+                    )
+                )
+            )
 
         tasks = self._build_tasks(
             workflow_id=outcome_request.request_id,
@@ -90,6 +128,9 @@ class WorkflowPlanner:
             domain=domain,
             strategy=strategy.strategy,
             workflow_definition=workflow,
+            selected_capabilities=(
+                selected_capabilities
+            ),
             confidence=1.0,
         )
 
