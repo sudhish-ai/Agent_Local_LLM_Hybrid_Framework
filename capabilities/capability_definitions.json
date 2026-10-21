@@ -19,6 +19,16 @@
       "capability_id": "flight_search",
       "capability_name": "Flight Search",
       "description": "Search available flights."
+    },
+    {
+      "capability_id": "provider_search",
+      "capability_name": "Provider Search",
+      "description": "Search healthcare providers and specialists."
+    },
+    {
+      "capability_id": "appointment_booking",
+      "capability_name": "Appointment Booking",
+      "description": "Book appointments with healthcare providers."
     }
   ]
 }

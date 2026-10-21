@@ -182,7 +182,7 @@ async def main() -> None:
     capability_result = (
         capability_loader.load(
             Path(
-                "domains/travel/"
+                "capabilities/"
                 "capability_definitions.json"
             )
         )
@@ -235,6 +235,33 @@ async def main() -> None:
             mapping
         )
 
+    print(
+        f"Capabilities Loaded : "
+        f"{capability_result.loaded_count}"
+    )
+
+    for warning in (
+            capability_result.warning_messages
+    ):
+        print(
+            f"[WARNING] {warning}"
+        )
+
+    print(
+        f"Capabilities Registered : "
+        f"{capability_registry.count()}"
+    )
+
+    print(
+        f"Intent Mappings Loaded : "
+        f"{intent_result.loaded_count}"
+    )
+
+    print(
+        f"Domain Mappings Loaded : "
+        f"{domain_result.loaded_count}"
+    )
+
     capability_runtime = (
         CapabilityRuntime(
             intent_capability_resolver=(
@@ -275,11 +302,6 @@ async def main() -> None:
     print(
         "[SUCCESS] Capability "
         "Runtime initialized."
-    )
-
-    print(
-        f"Capabilities Loaded : "
-        f"{capability_registry.count()}"
     )
 
     print(
