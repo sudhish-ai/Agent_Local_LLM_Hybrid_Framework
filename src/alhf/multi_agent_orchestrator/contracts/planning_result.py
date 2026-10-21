@@ -10,6 +10,7 @@
 # - Capture detected intent.
 # - Capture detected domain.
 # - Capture selected strategy.
+# - Capture selected capabilities.
 # - Capture planning confidence.
 # - Capture planning assumptions.
 # - Carry generated workflow definition.
@@ -41,11 +42,16 @@ class PlanningResult:
     V1:
         Supports template-driven planning.
 
+    V2:
+        Preserves selected capabilities alongside
+        workflow generation.
+
     V5:
         Supports Outcome Optimization Engine,
         Pattern Intelligence,
         Domain Intelligence,
         Strategy Formation,
+        Capability Planning,
         and Planning Confidence.
     """
 
@@ -56,6 +62,13 @@ class PlanningResult:
     strategy: str
 
     workflow_definition: WorkflowDefinition
+
+    selected_capabilities: tuple[
+        str,
+        ...
+    ] = field(
+        default_factory=tuple,
+    )
 
     confidence: float = 1.0
 

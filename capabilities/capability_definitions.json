@@ -1,0 +1,34 @@
+{
+  "capabilities": [
+    {
+      "capability_id": "hotel_search",
+      "capability_name": "Hotel Search",
+      "description": "Search hotels for a destination."
+    },
+    {
+      "capability_id": "hotel_booking",
+      "capability_name": "Hotel Booking",
+      "description": "Book a selected hotel."
+    },
+    {
+      "capability_id": "trip_planning",
+      "capability_name": "Trip Planning",
+      "description": "Generate trip itinerary and recommendations."
+    },
+    {
+      "capability_id": "flight_search",
+      "capability_name": "Flight Search",
+      "description": "Search available flights."
+    },
+    {
+      "capability_id": "provider_search",
+      "capability_name": "Provider Search",
+      "description": "Search healthcare providers and specialists."
+    },
+    {
+      "capability_id": "appointment_booking",
+      "capability_name": "Appointment Booking",
+      "description": "Book appointments with healthcare providers."
+    }
+  ]
+}

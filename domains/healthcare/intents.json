@@ -1,0 +1,11 @@
+{
+  "intent_capability_mappings": [
+    {
+      "intent_id": "appointment_booking",
+      "capability_ids": [
+        "provider_search",
+        "appointment_booking"
+      ]
+    }
+  ]
+}

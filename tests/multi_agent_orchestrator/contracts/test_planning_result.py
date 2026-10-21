@@ -9,6 +9,7 @@
 # - Validate required fields.
 # - Validate confidence handling.
 # - Validate assumptions handling.
+# - Validate selected capabilities handling.
 # - Validate workflow definition storage.
 #
 # Must Not:
@@ -28,13 +29,17 @@ from alhf.multi_agent_orchestrator.contracts.workflow_definition import (
 
 class TestPlanningResult(TestCase):
 
-    def _create_workflow(self) -> WorkflowDefinition:
+    def _create_workflow(
+        self,
+    ) -> WorkflowDefinition:
         return WorkflowDefinition(
             workflow_id="wf-001",
             workflow_type="repository_analysis",
         )
 
-    def test_required_fields(self) -> None:
+    def test_required_fields(
+        self,
+    ) -> None:
         workflow = self._create_workflow()
 
         result = PlanningResult(
@@ -59,7 +64,9 @@ class TestPlanningResult(TestCase):
             result.strategy,
         )
 
-    def test_default_confidence(self) -> None:
+    def test_default_confidence(
+        self,
+    ) -> None:
         workflow = self._create_workflow()
 
         result = PlanningResult(
@@ -74,7 +81,9 @@ class TestPlanningResult(TestCase):
             result.confidence,
         )
 
-    def test_custom_confidence(self) -> None:
+    def test_custom_confidence(
+        self,
+    ) -> None:
         workflow = self._create_workflow()
 
         result = PlanningResult(
@@ -90,7 +99,9 @@ class TestPlanningResult(TestCase):
             result.confidence,
         )
 
-    def test_default_assumptions(self) -> None:
+    def test_default_assumptions(
+        self,
+    ) -> None:
         workflow = self._create_workflow()
 
         result = PlanningResult(
@@ -105,7 +116,9 @@ class TestPlanningResult(TestCase):
             result.assumptions,
         )
 
-    def test_custom_assumptions(self) -> None:
+    def test_custom_assumptions(
+        self,
+    ) -> None:
         workflow = self._create_workflow()
 
         assumptions = [
@@ -126,7 +139,49 @@ class TestPlanningResult(TestCase):
             result.assumptions,
         )
 
-    def test_workflow_definition_reference(self) -> None:
+    def test_default_selected_capabilities(
+        self,
+    ) -> None:
+        workflow = self._create_workflow()
+
+        result = PlanningResult(
+            intent="repository_analysis",
+            domain="software_engineering",
+            strategy="root_cause_analysis",
+            workflow_definition=workflow,
+        )
+
+        self.assertEqual(
+            (),
+            result.selected_capabilities,
+        )
+
+    def test_custom_selected_capabilities(
+        self,
+    ) -> None:
+        workflow = self._create_workflow()
+
+        capabilities = (
+            "repository_scan",
+            "root_cause_analysis",
+        )
+
+        result = PlanningResult(
+            intent="repository_analysis",
+            domain="software_engineering",
+            strategy="root_cause_analysis",
+            workflow_definition=workflow,
+            selected_capabilities=capabilities,
+        )
+
+        self.assertEqual(
+            capabilities,
+            result.selected_capabilities,
+        )
+
+    def test_workflow_definition_reference(
+        self,
+    ) -> None:
         workflow = self._create_workflow()
 
         result = PlanningResult(

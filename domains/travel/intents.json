@@ -1,0 +1,18 @@
+{
+  "intent_capability_mappings": [
+    {
+      "intent_id": "hotel_booking",
+      "capability_ids": [
+        "hotel_search",
+        "hotel_booking"
+      ]
+    },
+    {
+      "intent_id": "flight_booking",
+      "capability_ids": [
+        "flight_search",
+        "flight_booking"
+      ]
+    }
+  ]
+}
