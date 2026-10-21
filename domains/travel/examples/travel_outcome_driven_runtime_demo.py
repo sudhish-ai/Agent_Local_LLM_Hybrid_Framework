@@ -8,6 +8,7 @@
 #
 # Responsibilities:
 # - Demonstrate travel workflow execution.
+# - Demonstrate composition layer reuse.
 # - Demonstrate AgentRuntime reuse.
 # - Demonstrate WorkflowExecutor reuse.
 # - Demonstrate cross-domain runtime compatibility.
@@ -18,12 +19,21 @@
 # - Modify runtime behavior.
 # - Contain orchestration logic.
 # - Duplicate runtime responsibilities.
+#
+# Design Philosophy:
+# Design For V5.
+# Implement For V2.
+#
+# V2 Goal:
+# Demonstrate composition layer adoption
+# without changing runtime behavior.
 
 from __future__ import annotations
 
 import asyncio
-
 import time
+
+from pathlib import Path
 
 from domains.travel.agents.hotel_booking_agent import (
     HotelBookingAgent,
@@ -35,61 +45,18 @@ from domains.travel.agents.trip_planning_agent import (
     TripPlanningAgent,
 )
 
+from alhf.composition.capability_intelligence_bootstrap import (
+    CapabilityIntelligenceBootstrap,
+)
+from alhf.composition.runtime_execution_bootstrap import (
+    RuntimeExecutionBootstrap,
+)
+
 from alhf.multi_agent_orchestrator.contracts.task_definition import (
     TaskDefinition,
 )
 from alhf.multi_agent_orchestrator.contracts.workflow_definition import (
     WorkflowDefinition,
-)
-from alhf.multi_agent_orchestrator.execution.task_executor import (
-    TaskExecutor,
-)
-from alhf.multi_agent_orchestrator.execution.workflow_executor import (
-    WorkflowExecutor,
-)
-from alhf.multi_agent_orchestrator.repositories.in_memory_task_repository import (
-    InMemoryTaskRepository,
-)
-from alhf.multi_agent_orchestrator.runtime.agent_runtime import (
-    AgentRuntime,
-)
-from alhf.multi_agent_orchestrator.scheduler.in_memory_scheduler import (
-    InMemoryScheduler,
-)
-
-from pathlib import Path
-
-from alhf.capability.capability_registry import (
-    CapabilityRegistry,
-)
-from alhf.capability.capability_runtime import (
-    CapabilityRuntime,
-)
-from alhf.capability.capability_selection_engine import (
-    CapabilitySelectionEngine,
-)
-from alhf.capability.json_capability_definition_loader import (
-    JsonCapabilityDefinitionLoader,
-)
-
-from alhf.domain.domain_capability_registry import (
-    DomainCapabilityRegistry,
-)
-from alhf.domain.domain_capability_resolver import (
-    DomainCapabilityResolver,
-)
-from alhf.domain.json_domain_capability_loader import (
-    JsonDomainCapabilityLoader,
-)
-
-from alhf.intent.intent_capability_registry import (
-    IntentCapabilityRegistry,
-)
-from alhf.intent.intent_capability_resolver import (
-    IntentCapabilityResolver,
-)
-from alhf.intent.json_intent_capability_loader import (
-    JsonIntentCapabilityLoader,
 )
 
 
@@ -97,7 +64,7 @@ def print_banner() -> None:
     print(
         "\n"
         "====================================================\n"
-        "ALHF Travel Outcome Driven Runtime Demo\n"
+        "ALHF Travel Outcome Driven Runtime Demo V2\n"
         "===================================================="
     )
 
@@ -109,16 +76,9 @@ async def main() -> None:
         "\n[STEP 1] Building Runtime Components..."
     )
 
-    task_repository = (
-        InMemoryTaskRepository()
-    )
-
-    scheduler = (
-        InMemoryScheduler()
-    )
-
-    agent_runtime = (
-        AgentRuntime()
+    runtime_context = (
+        RuntimeExecutionBootstrap()
+        .build()
     )
 
     print(
@@ -129,16 +89,25 @@ async def main() -> None:
         "\n[STEP 2] Registering Travel Agents..."
     )
 
-    await agent_runtime.register_agent(
-        HotelSearchAgent(),
+    await (
+        runtime_context.agent_runtime
+        .register_agent(
+            HotelSearchAgent(),
+        )
     )
 
-    await agent_runtime.register_agent(
-        HotelBookingAgent(),
+    await (
+        runtime_context.agent_runtime
+        .register_agent(
+            HotelBookingAgent(),
+        )
     )
 
-    await agent_runtime.register_agent(
-        TripPlanningAgent(),
+    await (
+        runtime_context.agent_runtime
+        .register_agent(
+            TripPlanningAgent(),
+        )
     )
 
     print(
@@ -158,139 +127,57 @@ async def main() -> None:
         f"Goal: {customer_goal}"
     )
 
-
     print(
         "\n[STEP 4] Building Capability Intelligence..."
     )
 
-    capability_registry = (
-        CapabilityRegistry()
-    )
-
-    intent_registry = (
-        IntentCapabilityRegistry()
-    )
-
-    domain_registry = (
-        DomainCapabilityRegistry()
-    )
-
-    capability_loader = (
-        JsonCapabilityDefinitionLoader()
-    )
-
-    capability_result = (
-        capability_loader.load(
-            Path(
-                "capabilities/"
-                "capability_definitions.json"
-            )
+    capability_context = (
+        CapabilityIntelligenceBootstrap()
+        .build(
+            capability_definitions_path=(
+                Path(
+                    "capabilities/"
+                    "capability_definitions.json"
+                )
+            ),
+            domain_capabilities_path=(
+                Path(
+                    "domains/travel/"
+                    "capabilities.json"
+                )
+            ),
+            intent_mappings_path=(
+                Path(
+                    "domains/travel/"
+                    "intents.json"
+                )
+            ),
         )
     )
-
-    for capability in (
-            capability_result.loaded_items
-    ):
-        capability_registry.register(
-            capability
-        )
-
-    domain_loader = (
-        JsonDomainCapabilityLoader()
-    )
-
-    domain_result = (
-        domain_loader.load(
-            Path(
-                "domains/travel/"
-                "capabilities.json"
-            )
-        )
-    )
-
-    for mapping in (
-            domain_result.loaded_items
-    ):
-        domain_registry.register(
-            mapping
-        )
-
-    intent_loader = (
-        JsonIntentCapabilityLoader()
-    )
-
-    intent_result = (
-        intent_loader.load(
-            Path(
-                "domains/travel/"
-                "intents.json"
-            )
-        )
-    )
-
-    for mapping in (
-            intent_result.loaded_items
-    ):
-        intent_registry.register(
-            mapping
-        )
 
     print(
         f"Capabilities Loaded : "
-        f"{capability_result.loaded_count}"
+        f"{capability_context.capability_count}"
     )
-
-    for warning in (
-            capability_result.warning_messages
-    ):
-        print(
-            f"[WARNING] {warning}"
-        )
 
     print(
         f"Capabilities Registered : "
-        f"{capability_registry.count()}"
+        f"{capability_context.capability_registry.count()}"
     )
 
     print(
         f"Intent Mappings Loaded : "
-        f"{intent_result.loaded_count}"
+        f"{capability_context.intent_mapping_count}"
     )
 
     print(
         f"Domain Mappings Loaded : "
-        f"{domain_result.loaded_count}"
-    )
-
-    capability_runtime = (
-        CapabilityRuntime(
-            intent_capability_resolver=(
-                IntentCapabilityResolver(
-                    capability_registry=
-                    capability_registry,
-                    intent_capability_registry=
-                    intent_registry,
-                )
-            ),
-            domain_capability_resolver=(
-                DomainCapabilityResolver(
-                    capability_registry=
-                    capability_registry,
-                    domain_capability_registry=
-                    domain_registry,
-                )
-            ),
-            domain_capability_registry=(
-                domain_registry
-            ),
-            capability_selection_engine=(
-                CapabilitySelectionEngine()
-            ),
-        )
+        f"{capability_context.domain_mapping_count}"
     )
 
     selected_capabilities = (
-        capability_runtime
+        capability_context
+        .capability_runtime
         .select_capabilities(
             intent_id=
             "hotel_booking",
@@ -309,14 +196,16 @@ async def main() -> None:
     )
 
     for capability in (
-            selected_capabilities
+        selected_capabilities
     ):
         print(
             f"  - "
             f"{capability.capability_id}"
         )
 
-    print("======="*20)
+    print(
+        "=======" * 20
+    )
 
     time.sleep(10)
 
@@ -384,16 +273,6 @@ async def main() -> None:
         "\n[STEP 6] Building Executors..."
     )
 
-    task_executor = TaskExecutor(
-        task_repository=task_repository,
-        agent_runtime=agent_runtime,
-    )
-
-    workflow_executor = WorkflowExecutor(
-        scheduler=scheduler,
-        task_executor=task_executor,
-    )
-
     print(
         "[SUCCESS] Executors initialized."
     )
@@ -403,8 +282,12 @@ async def main() -> None:
     )
 
     workflow_result = (
-        await workflow_executor.execute(
-            workflow,
+        await (
+            runtime_context
+            .workflow_executor
+            .execute(
+                workflow,
+            )
         )
     )
 
