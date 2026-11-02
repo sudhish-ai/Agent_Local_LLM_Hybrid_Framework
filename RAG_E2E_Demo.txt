@@ -1,0 +1,1008 @@
+
+Sudhish Singh@LAPTOP-I14VJ72B MINGW64 /d/AI_Projects/Agent_Local_LLM_Hybrid_Framework (feature/alhf-foundation-layer)
+$ PYTHONPATH=src python -m pytest tests/rag/e2e/test_knowledge_runtime_v1.py -vv -s
+==================================== test session starts ====================================
+platform win32 -- Python 3.14.2, pytest-9.0.3, pluggy-1.6.0 -- C:\Python\python.exe
+cachedir: .pytest_cache
+rootdir: D:\AI_Projects\Agent_Local_LLM_Hybrid_Framework
+configfile: pyproject.toml
+plugins: anyio-4.13.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 1 item
+
+tests/rag/e2e/test_knowledge_runtime_v1.py::test_real_pdf_executes_black_box_knowledge_runtime_v1
+==============================================================================
+ALHF KNOWLEDGE FOUNDATION V1 - LIVE BLACK-BOX DEMO
+==============================================================================
+[USER] Source : dell-openmanage-enterprise_users-guide19_en-us.pdf
+[USER] Query  : maximum number managed devices
+
+[ALHF] Building deterministic V1 Knowledge runtime...
+[ALHF] Runtime ready.
+
+[ALHF] Ingesting customer Knowledge source...
+
+[ALHF] INGESTION RESULT
+  execution_id     : knowledge:bcf80b66-09ef-4607-80ee-a50191b28747
+  status           : COMPLETED
+  acquired         : 1
+  parsed           : 1
+  normalized       : 1
+  derived          : 34
+  represented      : 34
+  indexed          : 34
+  failed resources : 0
+
+[ALHF] Executing Knowledge query...
+
+[ALHF] QUERY RESULT
+  context_id       : context:8cc48352d9b5aaf060c934e35e8f6d5f6d2fcd1361e852b860b9703d7953d7c1
+  evidence_count   : 3
+  context_bytes    : 49156
+  evaluation_score : 1.0
+
+[ALHF] RETRIEVED KNOWLEDGE
+ob
+• Delete a device discovery job
+Discover servers automatically by using the server-
+initiated discovery feature
+OpenManage Enterprise allows automatic discovery of servers that have iDRAC firmware version 4.00.00.00 or later. The
+appliance can be configured to allow these servers to automatically locate the console by querying the DNS and initiate their
+discovery .
+For a server-initiated discovery, the following prerequisites must be met:
+● This feature is applicable only for servers with iDRAC firmware version 4.00.00.00 or later.
+● The servers must be on the same domain or subdomain as OpenManage Enterprise.
+● OpenManage Enterprise must be registered with the DNS to add the configuration information to the DNS by using TUI. It is
+preferred that the DNS allows automatic updates from OpenManage Enterprise.
+● Old records of the appliance console on the DNS, if any, should be cleaned up to avoid multiple announcements from the
+servers.
+NOTE:  Scope-Based Access Control (SBAC) does not affect the device listings on the Monitor  > Server Initiated
+Discovery  page and the device managers would see devices which are beyond their scope on this page.
+The following steps are followed for an automatic discovery of servers in OpenManage Enterprise :
+1. Add the configuration information of OpenManage Enterprise on the DNS using one of following methods:
+● TUI—By using the TUI interface, enable the Configure Server Initiated Discovery  option. For more information, see
+Configure OpenManage Enterprise by using Text User Interface  on page 26.
+● Manually—Add the following four records to your DNS server on the network for which the interface is configured on
+the appliance. Ensure that you replace all instances of <domain>  or <subdomain.domain>  with the appropriate DNS
+domain and the system hostname.
+○ <OME hostname>.<domain> 3600 A <OME IP address>
+○ _dcimprovsrv._tcp.<domain> 3600 PTR ptr.dcimprovsrv._tcp.<domain>
+○ ptr.dcimprovsrv._tcp.<domain> 3600 TXT URI=/api/DiscoveryConfigService/Actions/
+DiscoveryConfigService.SignalNodePresence
+○ ptr.dcimprovsrv._tcp.<domain> 3600 SRV 0 0 443 <hostname>.<domain>
+To create the records with nsupdate  in Linux, use the following commands:
+○ To create hostname record
+>update add omehost.example.com 3600 A XX.XX.XX.XX
+○ To add records for server-initiated discovery
+>update add _dcimprovsrv._tcp.example.com 3600 PTR ptr.dcimprovsrv._
+tcp.example.com.
+>update add ptr.dcimprovsrv._tcp.example.com 3600 TXT URI=/api/
+DiscoveryConfigService/Actions/DiscoveryConfigService.SignalNodePresence
+>update add ptr.dcimprovsrv._tcp.example.com 3600 SRV 0 0 443
+omehost.example.com.
+To create the records with dnscmd  on a Windows DNS server, use the following commands:
+40 Discovering devices for monitoring or management
+
+○ To create hostname record
+>dnscmd <DnsServer> /RecordAdd example.com omehost A XX.XX.XX.XX
+○ To add records for server-initiated discovery
+>dnscmd <DnsServer> /RecordAdd example.com _dcimprovsrv._tcp PTR
+ptr.dcimprovsrv._tcp.example.com
+>dnscmd <DnsServer> /RecordAdd example.com ptr.dcimprovsrv._tcp TXT URI=/api/
+DiscoveryConfigService/Actions/DiscoveryConfigService.SignalNodePresence
+>dnscmd <DnsServer> /RecordAdd example.com ptr.dcimprovsrv._tcp SRV 0 0 443
+omehost.example.com
+2. By default, the Discovery-Approval policy, in the appliance, is set to Automatic and the servers that establish contact with
+the console are automatically discovered. To change the settings, see Manage Console preferences  on page 157.
+3. Once the appliance is configured as mentioned in the previous steps, the servers can initiate contact with OpenManage
+Enterprise by querying the DNS. The appliance verifies the servers after ensuring that the client certificate of the servers is
+signed by the Dell CA.
+NOTE:  If there are any changes in the server IP address or SSL certificate, the server reinitiates contact with
+OpenManage Enterprise.
+4. The Monitor  > Server Initiated Discovery  page lists the servers that establish contact with the console. Also, the servers
+whose credentials have been added in the console, but which are yet to initiate contact are also listed. The following
+statuses of the servers based on the previously mentioned conditions are displayed:
+● Announced—Server initiates contact with the console, however, the credentials of the server are not added to the
+console.
+● Credentials Added—The credentials of the server are added in the console, however, the server has not initiated contact
+with the console.
+● Ready to Discover—The credentials of the server are added and the server has initiated contact.
+NOTE:  The appliance triggers a Discovery job every 10 minutes to discover all the servers in the 'Ready to Discover'
+status. However, if the Discovery-Approval policy in the appliance is set as 'Manual,' then the user should manually
+trigger the Discovery job for each server. For more information, see Manage Console preferences  on page 157
+● Job submitted for Discovery—This status indicates that the discovery job is initiated either automatically or manually for
+the server.
+● Discovered—The server is discovered and is listed on the All Devices page.
+The following tasks can be performed on the Monitor  > Server Initiated Discovery  page:
+1. Import —To import the server credentials:
+a. Click Import .
+b. In the Import From File wizard, click Upload Service Tags File  to navigate and select the .csv file.
+To view a sample CSV file of the server credentials, click Download sample CSV file .
+c. Click Finish
+2. Discover —To manually discover the servers in 'Ready to Discover' status:
+a. Select the servers listed on the Server-Initiated Discovery page which are in 'Ready to Discover' Status.
+b. Click Discover .
+A Discover job is triggered to discover the servers and post discovery these servers are listed on the All Devices page.
+3. Delete —To delete the servers listed on the Server-Initiated Discovery page:
+a. Select the servers on the Server-Initiated Discovery page which are already discovered and listed on the All Devices
+page.
+b. Click Delete.
+The servers are deleted from the Server-Initiated Discovery page.
+NOTE:  Entries corresponding to discovered servers are automatically be purged after 30 days.
+4. Export —To export the server credentials in HTML, CSV, or PDF formats:
+a. Select one or more servers on the Sever-Initiated Discovery page.
+b. Click Export .
+Discovering devices for monitoring or management 41
+
+c. In the Export All wizard, select any of the following file formats: HTML, CSV, and PDF.
+d. Click Finish . A job is created, and the data is exported to the selected location.
+Create a device discovery job
+The following steps describes how to initiate a device discovery job in OpenManage Enterprise to discover the devices in your
+data center using the Create Discovery Job wizard.
+NOTE:  To perform any tasks on OpenManage Enterprise, you must have necessary user privileges. See Role and scope
+based access control in OpenManage Enterprise on page 15.
+1. To initiate the Create Discovery Job you can do one of the following steps:
+● Click Monitor  > Discovery  > Create .
+● Alternatively, from the All Devices page ( OpenManage Enterprise  > Devices ), click the Discovery  drop-down menu
+and click Discover Devices .
+2. In the Create Discovery Job  dialog box, a default job name is populated. To change it, enter the discovery job name.
+By default, the dialog box enables you to define properties of similar devices at a time.
+● To include more devices or ranges to the current discovery job, click Add. Another set of the following fields is displayed
+where you can specify the device properties: Type, IP/Hostname/Range, and Settings.
+WARNING:  A maximum of 8,000 devices can be managed by OpenManage Enterprise. Hence, do not
+specify large networks that have devices more than the maximum number of devices supported by
+OpenManage Enterprise. It may cause the system to abruptly stop responding.
+NOTE:  When discovering a large number of devices, avoid creating multiple discovery jobs using individual IP address
+and instead use IP range of the devices.
+● To discover devices by importing ranges from the .csv file. See Specify multiple devices by importing data from the .csv
+file  on page 46.
+● To exclude certain devices, remove devices from being excluded, or to view the list of devices excluded from being
+discovered, see Globally excluding device(s) from discovery results .
+3. From the Device Type  drop-down menu, to discover:
+● A server, select SERVER . See Specifying discovery mode for creating a server discovery job .
+● A chassis, select CHASSIS . See Specifying discovery mode for creating a chassis discovery job .
+● A Dell EMC storage device, or network switch, select DELL STORAGE , or NETWORKING SWITCH . See Specifying
+discovery mode for creating a storage, Dell storage, and network switch discovery job .
+● To discover devices by using multiple protocols, select MULTIPLE . See Specify discovery mode for creating a MULTIPLE
+protocol discovery job  on page 51.
+4. In the  IP/Hostname/Range  box, enter the IP address, host name, or the range of IP address to be discovered or included.
+For more information about the data you can enter in this field, click the i symbol.
+NOTE:
+● The range size is limited to 16,385 (0x4001).
+● IPv6 and IPv6 CIDR formats too are supported.
+5. In the Settings  section, enter the username and password of the protocol that is used for discovering the ranges.
+6. Click Additional Settings , to select a different protocol, and change the settings.
+7. In the Scheduling Discovery Job  section, run the job immediately or schedule for a later point of time. See Schedule job
+field definitions  on page 172.
+8. Select Enable trap reception from discovered iDRAC servers and MX7000 chassis  to enable the OpenManage
+Enterprise receive the incoming traps from the discovered servers and MX7000 chassis.
+NOTE:  Enabling this setting will enable alerts on the iDRAC (if disabled), and set an alert destination for the
+OpenManage Enterprise server's IP address. If there are specific alerts that need to be enabled, you must configure
+these on the iDRAC by enabling the appropriate alert filers and SNMP traps. For more information, see the iDRAC User's
+Guide.
+9. Select Set Community String for trap destination from Application Settings . This option is available only for the
+discovered iDRAC servers and MX7000 chassis.
+10. Select the Email when complete  check box, and then enter the email address that must receive notification about the
+discovery job status. If the email is not configured, the Go to SMTP Settings  link is displayed. Click the link, and configure
+42 Discovering devices for monitoring or management
+
+the SMTP settings. See Configure SMTP, SNMP, and Syslog alerts  on page 116. If you select this but do not configure
+SMTP, the Finish  button is not displayed to continue the task.
+11. Click Finish . The Finish button is not displayed if the fields are incorrectly or incompletely filled.
+A discovery job is created and run. The status is displayed on the Job Details  page.
+During device discovery, the user account that is specified for the discovery range is verified against all available privileges that
+are enabled on a remote device. If the user authentication passes, the device is automatically onboarded or the device can be
+onboarded later with different user credentials. See Onboarding devices  on page 43.
+NOTE:  During CMC discovery, the servers, and IOM and storage modules (configured with IP and SNMP set to "public"
+as community string), residing on CMC are also discovered and are onboarded. If you enable trap reception during CMC
+discovery, the OpenManage Enterprise is set as the trap destination on all the servers and not on the chassis.
+NOTE:  During CMC discovery, FN I/O Aggregators in Programmable MUX (PMUX) mode are not discovered.
+Onboarding devices
+Onboarding enables servers to be managed, rather than just be monitored.
+● If administrator-level credentials are provided during discovery, the servers are onboarded (the device status is displayed as
+"managed" in the All Devices view).
+● If lower privileged credentials are provided during discovery, the servers are not onboarded (the status is displayed as
+"monitored" in the All Devices view).
+● If the console is also set as a trap receiver on the servers then their Onboarding status is indicated as "managed with alerts".
+● Error : Indicates an issue in onboarding the device.
+● Proxied : Available only for MX7000 chassis. Indicates that the device is discovered through an MX7000 chassis and not
+directly.
+If you want to onboard devices with a different user account apart from the account specified for discovery, or re-attempt
+onboarding because of a failure in onboarding during discovery, do the following:
+NOTE:
+● All devices that have been onboarded through this wizard remain onboarded through this user account and is not
+substituted by the discovery user account during future discoveries against these devices.
+● For the already discovered devices, if the SNMP trap destination is 'manually' set in iDRAC as OpenManage Enterprise,
+the alerts are received and processed by the appliance. However, the device's Managed State displayed on the All
+Devices page remains the same as its initial discovered state of 'Monitored,' 'Managed' or 'Managed with Alerts.'
+● The All Devices page displays the Managed State  of all the onboarded chassis as "Managed" irrespective of which
+chassis user-role credentials were used at the time of onboarding. If the chassis was onboarded with credentials of a
+"read-only" user, then there may be a failure during update activities performed on chassis. Hence, It is recommended to
+onboard chassis with credentials of a chassis Administrator to perform all activities.
+● To perform any tasks on OpenManage Enterprise, you must have necessary user privileges. See Role and scope based
+access control in OpenManage Enterprise on page 15.
+1. From the OpenManage Enterprise  menu, under Devices , click All Devices .
+A Donut chart indicates status of all devices in the working pane. See the Donut chart . The table lists the properties of
+devices selected along with their following onboarding status:
+● Error : Device cannot be onboarded. Try by logging in by using the recommended privileges. See Role and scope based
+access control in OpenManage Enterprise on page 15.
+● Managed : Device successfully onboarded, and can be managed by the OpenManage Enterprise console.
+● Monitored : Device does not have management option (such as the one discovered by using SNMP).
+● Managed with alerts : Device is successfully onboarded, and the OpenManage Enterprise console has successfully
+registered its IP address with the device as a trap destination during discovery.
+2. In the working pane, select a check box corresponding to the device(s), click More Actions  > Onboarding .
+Ensure that you select only the device types from the All Devices page that are supported for onboarding. You can search
+for suitable devices in the table by clicking Advanced Filters , and then select or enter onboarding status data in the filter
+box.
+NOTE:  All devices that are discovered are not supported for onboarding and only iDRAC and CMC are supported.
+Ensure that you select onboarding option for the supported device type.
+Discovering devices for monitoring or management 43
+
+3. In the Onboarding  dialog box, enter the WS-Man credentials—username and password.
+4. In the Connection Settings  section:
+a. In the Retries  box, enter the number of repeated attempts that must be made to discover a server.
+b. In the Timeout  box, enter the time after which a job must stop running.
+NOTE:  If the timeout value entered is greater than the current session expiry time, you are automatically logged
+out of OpenManage Enterprise. However, if the value is within the current session expiration timeout window, the
+session is continued and not logged out.
+c. In the Port  box, enter the port number that the job must use to discover.
+d. Optional field. Select Enable Common Name (CN) check .
+e. Optional field. Select Enable Certificate Authority (CA) check  and browse to the certificate file.
+5. Click Finish .
+NOTE:  The Enable t
+
+roup .
+● Click Group Actions  > Create Custom Group  > Static Group  .
+2. In the Create Static Group Wizard  dialog box, enter a Name and Description (optional) for the group, and then select a
+parent group under which the new static group must be created.
+NOTE:  The static or dynamic group names and server configuration related names in OpenManage Enterprise must be
+unique (not case-sensitive). For example, name1  and Name1  cannot be used at the same time.
+3. Click Next .
+4. From the Group Member Selection dialog box, select the devices that must be included in the static group.
+5. Click Finish .
+54 Manage devices and device groups
+
+The static group is created and listed under the parent group in the left pane. The child groups are indented from its parent
+group.
+Create a Query device group
+Query groups are dynamic groups whose devices are defined by matching some user-specified criteria. Devices in the group
+change based on the result of devices that are discovered by using the query criteria. On the All Devices page ( OpenManage
+Enteprise  > Devices ), You can create query groups using the Create Query Group wizard.
+NOTE:  To perform any tasks on OpenManage Enterprise, you must have necessary role-based user privileges and scope-
+based operational access to the devices. See Role and scope based access control in OpenManage Enterprise on page 15.
+1. To activate the Create Query Group wizard, you can do one of the following:
+● Under Custom Groups, either right click on Query Groups  or click the three dots vertical menu next to the Query
+Groups, and then click Create New Query Group.
+● Click Group Actions  > Create Custom Group  > Query Group .
+2. In the Create Query Group Wizard  dialog box, enter a Name  and Description (optional) for the group.
+3. Click Next .
+4. In the Query Criteria Selection  dialog box, from the Select existing query to copy drop-down menu, select a query, and
+then select the other filter criteria. See Select a query criteria  on page 55.
+5. Click Finish .
+The query group is created and listed under the Query group section in the left pane.
+Select a query criteria
+Define filters while creating query criteria for:
+● Generating customized reports. See Creating reports  on page 134.
+● Creating Query-based device groups under the CUSTOM GROUPS. See Create a Query device group  on page 55.
+Define the query criteria by using two options:
+● Select existing query to copy : By default, OpenManage Enterprise provides a list of built-in query templates that you can
+copy and build your own query criteria. A maximum of 6 criteria (filters) can be used while defining a query. To add filters,
+you must select from the Select Type  drop-down menu.
+● Select type : Build a query criteria from scratch by using attributes listed in this drop-down menu. Items in the menu depend
+on the devices monitored by OpenManage Enterprise. When a query type is selected, only appropriate operators such as
+=, >, <, and null are displayed based on the query type. This method is recommended for defining query criteria in building
+customized reports.
+NOTE:  When evaluating a query with multiple conditions, the order of evaluation is same as SQL. To specify a particular
+order for the evaluation of the conditions, add or remove parenthesis when defining the query.
+NOTE:  When selected, the filters of an existing query criteria is copied only virtually to build a new query criteria. The
+default filters associated with an existing query criteria is not changed. The definition (filters) of a built-in query criteria is
+used as a starting point for building a customized query criteria. For example:
+1. Query1  is a built-in query criteria that has the following predefined filter: Task Enabled=Yes .
+2. Copy the filter properties of Query1 , create Query2 , and then customize the query criteria by adding another filter: Task
+Enabled=Yes  AND (Task Type=Discovery) .
+3. Later, open Query1 . Its filter criteria still remains as Task Enabled=Yes .
+1. In the Query Criteria Selection  dialog box, select from the drop-down menu based on whether you want to create a query
+criteria for Query groups or for report generation.
+2. Add or remove a filter by clicking the plus or dustbin symbol respectively.
+3. Click Finish .
+A query criteria is generated and saved in the list of existing queries. An audit log entry is made and displayed in the Audit
+logs list. See Monitor audit logs  on page 120.
+Related information
+Managing the device configuration compliance  on page 104
+Edit a configuration compliance baseline  on page 108
+Manage devices and device groups 55
+
+Remove a configuration compliance baseline  on page 110
+Edit a static group
+On the All Devices page ( OpenManage Enterprise  > Devices ) the existing static groups can be renamed, repositioned, and
+the devices in the static group can be added or deleted using the Edit Static Group wizard.
+NOTE:  To perform any tasks on OpenManage Enterprise, you must have necessary role-based user privileges and scope-
+based operational access to the devices. See Role and scope based access control in OpenManage Enterprise on page 15.
+1. Right-click on the static group or click on the three vertical dots menu next to the static group, and then click Edit  to
+activate the Edit Static Group wizard.
+2. In the Edit Static Group Wizard, you can edit the Name, Description, and Parent Group.
+3. Click Next .
+4. In the Group Member Selection screen, you can check or uncheck the devices to include or exclude them from the static
+group.
+5. Click Finish .
+The changes made to the static group are implemented.
+Edit a query group
+On the All Devices page ( OpenManage Enterprise  > All Devices ), the existing query group can be renamed, repositioned, and
+the query criteria based on which the devices are included in the query group can be edited using the Edit Query Group wizard.
+To perform any tasks on OpenManage Enterprise, you must have necessary role-based user privileges and scope-based
+operational access to the devices. See Role and scope based access control in OpenManage Enterprise on page 15.
+1. Under CUSTOM GROUPS, right-click on the query group or click on the three vertical dots menu next to the query group
+and then click Edit .
+2. In the Edit Query Group wizard, make changes to the Name, Description as needed.
+3. Click Next .
+4. In the Query Criteria Selection dialog box, from the Select existing query to copy  drop-down menu, select a query, and
+then select the other filter criteria.
+5. Click Finish .
+The changes made to the query group are implemented.
+Rename a static or query group
+To rename a static or query group on the All Devices page ( OpenManage Enterprise  > Devices ):
+1. Under CUSTOM GROUPS , right-click a static or query group or click on the three dots next to the group you want to
+rename, and then click Rename . Or, select a group and then click Group Actions  > Rename Group .
+2. In the Rename Group  dialog box, enter a new name for the group.
+3. Click Finish
+The updated name is listed in the left pane.
+Delete a static or query device group
+On the All Devices page ( OpenManage Enterprise  > Devices ), you can delete an existing static or query group as follows:
+To perform any tasks on OpenManage Enterprise, you must have necessary role-based user privileges and scope-based
+operational access to the devices. See, Role and scope based access control in OpenManage Enterprise on page 15.
+NOTE:  This procedure is applicable only for deleting a static or query group, however the devices in the group would not be
+deleted from the All Devices page. To remove devices from OpenManage Enterprise, see Delete devices from OpenManage
+Enterprise  on page 60.
+56 Manage devices and device groups
+
+1. Under CUSTOM GROUPS , right-click the static or query group or click on the three dots vertical menu next to the group
+and then click Delete . OR, Select the group you want to delete, and then from the Group Actions  drop-down menu and
+click Delete Group .
+2. When prompted, click Yes.
+The group is deleted from the CUSTOM GROUPS.
+Clone a static or query group
+The existing static or query groups can be cloned and added to the CUSTOM GROUPS.
+NOTE:  To perform any tasks on OpenManage Enterprise, you must have necessary role-based user privileges and scope-
+based operational access to the devices. See Role and scope based access control in OpenManage Enterprise on page 15
+1. Right-click on the static or query group or click on the tree dots vertical menu next to the static or query group, and then
+click Clone .
+2. In the Clone Group  dialog box, enter a Name and description for the group. Additionally for static group, select a parent
+group under which the cloned Static must be created.
+3. Click Finish .
+The cloned group is created and listed under the parent group in the left pane.
+Add devices to a new group
+You can create a new group and add devices to it from the device list table available on the All Devices page.
+To perform any tasks on OpenManage Enterprise, you must have necessary role-based user privileges and scope-based
+operational access to the devices. See Role and scope based access control in OpenManage Enterprise on page 15.
+1. From the OpenManage Enterprise  menu, click Devices .
+All Devices page is displayed.
+2. In the devices list, select the check box corresponding to the device(s), and then click Group Actions  > Add To New
+Group .
+a. In the Add Devices to New Group Wizard  dialog box, enter the Name , Description (optional), and select the Parent
+Group  under which the new child group will be created. For more information about groups, see Device Groups .
+b. To add more devices to the group, click Next . Else, go to step 3.
+3. In the Group Member Selection dialog box, select more devices from the Add Devices list.
+After you select devices under the All Devices  tab, the selected devices are listed under All Selected Devices .
+4. Click Finish .
+A new group is created and the devices are added to the selected group.
+NOTE:  For creating groups or adding devices to a group, you must follow the parent-child relationship of groups. See
+Device Groups .
+Add devices to existing group
+You can add devices to an existing group from the device list table available on the All Devices page.
+NOTE:  To perform any tasks on OpenManage Enterprise, you must have necessary role-based user privileges and scope-
+based operational access to the devices. See Role and scope based access control in OpenManage Enterprise on page 15.
+1. From the OpenManage Enterprise  menu, click Devices .
+All Devices page is displayed.
+2. In devices list, select the check box corresponding to the device(s), and then click Group Actions  > Add To Existing
+Group .
+3. In the Add Selected Devices to Existing Group  dialog box, enter or select data. For more information about groups, see
+Device Groups .
+4. Click Finish .
+The devices are added to the selected existing group.
+NOTE:  For creating groups or adding devices to a group, you must follow the parent-child relationship of groups. See
+Device Groups .
+Manage devices and device groups 57
+
+Refresh health on group
+The following steps describe how you can refresh the health and online status of a selected group.
+NOTE:
+● To perform any tasks on OpenManage Enterprise, you must have necessary role-based user privileges and scope-based
+operational access to the devices. See Role and scope based access control in OpenManage Enterprise on page 15.
+● For the in-band devices discovered using the ESXi and Linux operating systems, the Health State (
+ ) is displayed as
+Unknown (
+  ).
+1. Go to the All Devices page by clicking OpenManage Enterprise  > Devices .
+2. On the left pane, select the group on which you want to refresh the health.
+After selection of the group, the devices' list will list the selected group's devices.
+3. Click the Refresh Heatlh drop-down menu and then click Refresh Health on Group . The Health wizard is displayed.
+4. In the Health wizard, Job Name  displays the appliance-generated job name for the refresh-health task. If needed, you can
+change the job name.
+5. The Select Group  drop down will show the group that you had selected.
+6. From the Scheduling drop down, you can select one of the following options:
+a. Run Now — To immediately run the Refresh Health on the selected group.
+b. Run Later — You can select Run Later and then select the Date and Time when the Refresh Health job on the group will
+run.
+c. Run on Schedule — You can select this option then choose the Daily or Weekly and select a time if you want to refresh
+the health on the group on Daily or Weekly basis at a particular time.
+A job to refresh the health and online status of the group is created. You can view the job details on the Jobs page
+(OpenManage Enterprise  > Monitor  > Jobs ).
+All Devices page - devices list
+The list of devices displays the device properties such as IP address and Service Tag. You can select a maximum of 25 devices
+per page and navigate the pages to select more devices and perform tasks. For more information about the tasks you can
+perform on the All Devices page, see All Devices page — device list actions  on page 59.
+NOTE:  By default, the Devices list displays all the devices considered while forming the Donut chart. To view a list of
+devices that belong to a specific health status, click the corresponding color band in the Donut chart, or click the health
+status symbol. Devices that belong only to the selected category are listed.
+● Health State  indicates the working state of the device. The health statuses—Normal, Critical, and Warning—are identified
+by respective color symbols. See Device health statuses  on page 38
+● Power State  indicates if the device is turned on or off
+● Connection State  indicates whether or not the device is connected to OpenManage Enterprise
+● Name  indicates device name.
+● IP Address  indicates the IP address of the iDRAC installed on the device
+● Identifier  indicates the service tag of the device
+● Model  indicates the model number
+● Type  indicates the type of device—Server, Chassis, Dell Storage, and Networking switch
+● Chassis Name  indicates chassis name
+● Slot Name  indicates the slot name for the chassis devices
+● Managed State  column indicates if the device is monitored, managed, or is proxied. See Discovering devices for monitoring
+or management  on page 39.
+To filter data in the table, click Advanced Filters  or the Filter symbol. To export data to HTML, CSV, or PDF file format, click
+the Export symbol in the upper-right corner.
+NOTE:  In the Devices list, click the device name or IP address to view device configuration data, and then edit. See View
+and configure individual devices  on page 64.
+NOTE:  The working pane displays the Donut chart of the selected device group. By using the Donut chart, you can view
+the list of devices that belongs to other health statuses in that group. To view devices of other health status, click the
+58 Manage devices and device groups
+
+corresponding color band on the Donut chart. The data in the table changes. For more information about using the Donut
+chart, see Donut chart .
+All Devices page — device list actions
+On the All Devices page ( OpenManage Enterprise  > Devices ) devices list, you can perform various device actions.
+The action buttons are context sensitive to both the group selection from the tree on the left and also for the devices selected
+in the grid. So if the action is group related, for example group actions such as 'Run Inventory on Group' roup and 'Refresh
+Health on Group' — will default to the selected group. All device actions will default to the selected devices. However, few
+actions such as Discovery are always applicable without any selection. Also, the type of actions available per device depend on
+the type of device selected.
+NOTE:  To perform any tasks on OpenManage Enterprise, you must have necessary role-based user privileges and scope-
+based operational access to the devices. See Role and scope based access control in OpenManage Enterprise on page 15.
+● From Group Actions  drop-down, you can:
+○ Create custom device groups. See Create a custom group (Static or Query)  on page 54.
+○ Create static groups. See Create a Static device group  on page 54.
+○ Create query groups. See Create a Quer
+
+deletion or reduction
+of the expanded disk space is not supported. To
+remove a newly added disk or to reverse the increase
+in size of an existing disk you must revert to prior VM
+snapshot.
+● If the initial scan detects no unallocated space, then
+allocate additional disk space or disks to the console on
+your hypervisor and rescan.
+● Scanning and allocation of disk space is limited to a
+maximum of four disks.
+Enable Field Service Debug (FSD) Mode Select Enable Field Service Debug (FSD) Mode  for console
+debugging. For more information, see Field service debug
+workflow  on page 174.
+28 Get started with OpenManage Enterprise
+
+Table 7. Text User Interface options (continued)
+Options Descriptions
+Restart Services Select Restart Services  with the following options to restart
+the services and networking:
+● Restart All Services
+● Restart Networking
+Setup Debug Logging Select Setup Debug Logging  using the following options :
+● Enable Debug Logs —to collect the Debug logs of
+the application monitoring tasks, events, and the task
+execution history.
+● Disable Debug Logs —to disable the Debug logs.
+● Enable SCP Retention —to collect the template .XML
+files.
+● Disable SCP Retention —to disable the SCP retention.
+You can download the debug logs by clicking Monitor  > Audit
+Logs  > Export  > Export Console Logs  in OpenManage
+Enterprise.
+Change keyboard layout Select Change keyboard layout to change the keyboard
+layout if needed.
+Reboot the Appliance Select Reboot the Appliance  to restart the appliance.
+NOTE:  After running a command to restart the services,
+the TUI may display the following message: NMI
+watchdog: BUG: soft lockup - CPU#0 stuck
+for 36s! [java:14439].
+The soft lockup issue likely occurs as a result of the
+hypervisor being overloaded. In such situations, it is
+recommended to have at least 16 GB of RAM and CPU
+of 8000 MHz reserved to the OpenManage Enterprise
+appliance. It is also recommended that the OpenManage
+Enterprise appliance be restarted when this message is
+displayed.
+Configure OpenManage Enterprise
+If you are logging in to OpenManage Enterprise for the first time, the Welcome to OpenManage Enterprise  page is displayed,
+which allows setting of time (either manually or using NTP time synchronization) and proxy configurations.
+1. To configure the time manually do the following in the Time Configuration  section:
+● Use the Timezone  drop down menu to select an appropriate Timezone.
+● In the Date  box, enter or select a date.
+● In the Time  box, fill the time.
+● Click Apply  to save the settings.
+2. If you want to use the NTP Server for time synchronization, do the following in the Time Configuration  section:
+NOTE:  When the NTP Server settings are updated, the currently logged in users are automatically logged out from their
+OpenManage Enterprise sessions.
+● Select the Use NTP check box.
+● Enter the IP address or hostname in Primary NTP Server Address  and Secondary NTP Server Address  (optional) for
+time synchronization
+3. If you want to set proxy server for external communication, In the Proxy Configuration section do the following:
+● Select the Enable HTTP Proxy Settings  check box.
+● Enter the Proxy Address .
+● Enter the Port number for the proxy server.
+Get started with OpenManage Enterprise 29
+
+● If the proxy server requires credentials to log in, select the  Enable Proxy Authentication  check box and enter the user
+name and password.
+● Select the Ignore Certificate Validation  check box if the configured proxy intercepts SSL traffic and does not use
+a trusted third-party certificate. Using this option will ignore the built-in certificate checks used for the warranty and
+catalog synchronization.
+4. Click Apply  to save the settings.
+NOTE:  For information about supported browsers, see the OpenManage Enterprise Support Matrix  available on the support
+site.
+Recommended scalability and performance settings
+for optimal usage of OpenManage Enterprise
+The following table lists the performance parameters of the supported features in OpenManage Enterprise. To ensure an optimal
+performance of OpenManage Enterprise, Dell EMC recommends to run the tasks at the specified frequency on the maximum
+number of devices that are recommended per task.
+Table 8. Scalability and performance considerations of OpenManage Enterprise
+Tasks Recommended frequency
+of running the tasks
+Tasks whether precanned? Maximum devices that are
+recommended per task.
+Discovery Once a day for environment
+with frequent network
+changes.
+No 10,000/task
+Inventory OpenManage Enterprise
+provides a precanned task
+that automatically refreshes
+inventory once a day.
+Yes. You can disable this
+feature.
+Devices that are monitored by
+OpenManage Enterprise.
+Warranty OpenManage Enterprise
+provides a precanned task
+that automatically refreshes
+warranty once a day.
+Yes. You can disable this
+feature.
+Devices that are monitored by
+OpenManage Enterprise.
+Health poll Every one hour Yes. You can change the
+frequency.
+Not applicable
+Firmware/Driver update Need-basis 150/task
+Configuration inventory Need-basis 1500/baseline
+Supported protocols and ports in OpenManage
+Enterprise
+Supported protocols and ports on management stations
+Table 9. OpenManage Enterprise Supported protocols and ports on management stations
+Port
+Number
+Protocol Port Type Maximum
+Encryption
+Level
+Source Direction Destination Usage
+22 SSH TCP 256-bit Management
+station
+In OpenManage
+Enterprise
+appliance
+● Required for
+incoming only if
+FSD is used.
+OpenManage
+Enterprise
+30 Get started with OpenManage Enterprise
+
+Table 9. OpenManage Enterprise Supported protocols and ports on management stations (continued)
+Port
+Number
+Protocol Port Type Maximum
+Encryption
+Level
+Source Direction Destination Usage
+administrator must
+enable only if
+interacting with
+the Dell EMC
+support staff.
+25 SMTP TCP None OpenManage
+Enterprise
+appliance
+Out Management
+station
+● To receive
+email alerts
+from OpenManage
+Enterprise.
+53 DNS UDP/TCP None OpenManage
+Enterprise
+appliance
+Out Management
+station
+● For DNS queries.
+68 / 546
+(IPv6)
+DHCP UDP/TCP None OpenManage
+Enterprise
+appliance
+Out Management
+station
+● Network
+configuration.
+80* HTTP TCP None Management
+station
+In OpenManage
+Enterprise
+appliance
+● The Web GUI
+landing page. This
+will redirect a user
+to HTTPS (Port
+443).
+123 NTP TCP None OpenManage
+Enterprise
+appliance
+Out NTP Server ● Time
+synchronization (if
+enabled).
+137, 138,
+139, 445
+CIFS UDP/TCP None iDRAC/ CMC In OpenManage
+Enterprise
+appliance
+● To upload
+or download
+deployment
+templates.
+● To upload TSR and
+diagnostic logs.
+● To download
+firmware/driver
+DUPs, and FSD
+process.
+● Boot to network
+ISO.
+OpenManage
+Enterprise
+appliance
+Out CIFS share ● To import
+firmware/driver
+catalogs from
+CIFS share.
+111, 2049
+(default)
+NFS UDP/TCP None OpenManage
+Enterprise
+appliance
+Out External NFS
+share
+● To download
+catalog and DUPs
+from the NFS
+share for firmware
+updates.
+● For manual
+console upgrade
+from network
+share.
+162* SNMP UDP None Management
+station
+In/Out OpenManage
+Enterprise
+appliance
+● Event reception
+through SNMP.
+The direction is
+'outgoing' only if
+Get started with OpenManage Enterprise 31
+
+Table 9. OpenManage Enterprise Supported protocols and ports on management stations (continued)
+Port
+Number
+Protocol Port Type Maximum
+Encryption
+Level
+Source Direction Destination Usage
+using the Trap
+forward policy.
+443
+(default)
+HTTPS TCP 128-bit SSL Management
+station
+In/Out OpenManage
+Enterprise
+appliance
+● Web GUI.
+● To download
+updates and
+warranty
+information from
+Dell.com. 256-bit
+encryption is
+allowed when
+communicating
+with the
+OpenManage
+Enterprise by
+using HTTPS for
+the web GUI.
+● Server-initiated
+discovery.
+514 Syslog TCP None OpenManage
+Enterprise
+appliance
+Out Syslog server ● To send alert
+and audit log
+information to
+Syslog server.
+3269 LDAPS TCP None OpenManage
+Enterprise
+appliance
+Out Management
+station
+● AD/ LDAP login
+for Global Catalog.
+636 LDAPS TCP None OpenManage
+Enterprise
+appliance
+Out Management
+station
+● AD/ LDAP login
+for Domain
+Controller.
+*Port can be configured up to 499 excluding the port numbers that are already allocated.
+Supported protocols and ports on managed nodes
+Table 10. OpenManage Enterprise supported protocols and ports on the managed nodes
+Port
+Number
+Protocol Port
+Type
+Maximum
+Encryption
+Level
+Source Directio
+n
+Destinatio
+n
+Usage
+22 SSH TCP 256-bit OpenManage
+Enterprise
+appliance
+Out Managed
+node
+● For the Linux OS, Windows, and
+Hyper-V discovery.
+161 SNMP UDP None OpenManage
+Enterprise
+appliance
+Out Managed
+node
+● For SNMP queries.
+162* SNMP UDP None OpenManage
+Enterprise
+appliance
+In/ Out Managed
+node
+● Send and receive SNMP traps.
+443 Proprietar
+y/ WS-
+Man/
+Redfish
+TCP 256-bit OpenManage
+Enterprise
+appliance
+Out Managed
+node
+● Discovery and inventory of
+iDRAC7 and later versions.
+● For the CMC management.
+32 Get started with OpenManage Enterprise
+
+Table 10. OpenManage Enterprise supported protocols and ports on the managed nodes (continued)
+Port
+Number
+Protocol Port
+Type
+Maximum
+Encryption
+Level
+Source Directio
+n
+Destinatio
+n
+Usage
+623 IPMI/
+RMCP
+UDP None OpenManage
+Enterprise
+appliance
+Out Managed
+node
+● IPMI access through LAN.
+69 TFTP UDP None CMC In Manageme
+nt station
+● For updating CMC firmware.
+* Port can be configured up to 499 excluding the port numbers that are already allocated.
+NOTE:  In an IPv6 environment, you must enable IPv6 and disable IPv4 in the OpenManage Enterprise appliance to ensure
+all the features work as expected.
+Use case links for the supported protocols and ports
+in OpenManage Enterprise
+Table 11. Use case links for the supported protocols and ports in OpenManage Enterprise
+Use case URL
+Upgrade OpenManage Enterprise appliance https://downloads.dell.com/openmanage_enterprise/
+Access device warranty https://apigtwb2c.us.dell.com/PROD/sbil/eapi/v5/asset-
+entitlements
+Update catalogs https://downloads.dell.com/catalog/
+Push new alert notifications using the OpenManage Mobile
+application
+https://openmanagecloud.dell.com
+Get started with OpenManage Enterprise 33
+
+OpenManage Enterprise Graphical User
+Interface overview
+On the OpenManage Enterprise Graphical User Interface (GUI), you can use menu items, links, buttons, panes, dialog boxes,
+lists, tabs, filter boxes, and pages to navigate between pages and complete device management tasks. Features such as devices
+list, Donut charts, audit logs, OpenManage Enterprise settings, system alerts, and firmware/driver update are displayed at
+more than one place. It is recommended that you familiarize yourself with the GUI elements for easily and effectively using
+OpenManage Enterprise to manage your data center devices.
+● A—The OpenManage Enterprise  menu, on all the pages of OpenManage Enterprise, provides links to features that enable
+administrators view the dashboard ( Home ), manage devices ( Devices ), manage firmware/driver baselines, templates,
+and configuration compliance baselines ( Configuration ), create and store alerts ( Alerts ), and then run jobs, discover,
+collect inventory data, and generate reports ( Monitor ). You can also customize different properties of your OpenManage
+Enterprise ( Application Settings ). Click the pin symbol in the upper-right corner to pin the menu items so they appear on
+all the OpenManage Enterprise pages. To unpin, click the pin symbol again.
+● B—The Dashboard symbol. Click to open the dashboard page from any page of OpenManage Enterprise. Alternately, click
+Home . See Dashboard .
+● C—The Donut chart gives a snapshot of health status of all the devices monitored by OpenManage Enterprise. Enables you
+to quickly act upon the devices that are in critical state. Each color in the chart represents a group of devices having a
+particular health state. Click respective color bands to view respective devices in the devices list. Click the device name or IP
+address to view the device properties page. See View and configure individual devices  on page 64.
+● D—The symbols used to indicate the device health state. See Device health statuses  on page 38.
+● E—In the Search Everything  box, enter about anything that is monitored and displayed by OpenManage Enterprise to view
+the results such as device IP, job name, group name, firmware/driver baseline, and warranty data on all the devices in your
+scope as defined by the Scope Based Access Control (SBAC). You cannot sort or export data that is retrieved by using the
+Search Everything feature. On individual pages or dialog boxes, enter or select from the Advance Filters  section to refine
+your search results.
+○ The following operators are not supported: +, -, and ".
+● F—Number of OpenManage Enterprise jobs currently in the queue. Jobs that are related to discovery, inventory, warranty,
+firmware and/or drivers update, and so on. Click to view the status of jobs run under Health, Inventory, and the Report
+category on the Job Details page. To view all the events, click All Jobs . See Using jobs for device control  on page 122. Click
+to refresh.
+5
+34 OpenManage Enterprise Graphical User Interface overview
+
+● G—The number of events generated in the alerts log. Also, based on your settings to whether or not view the
+unacknowledged alerts, the number of alerts in this section varies. By default, only the unacknowledged alerts are displayed.
+To hide or unhide the acknowledged alerts, see Customize the alert display  on page 158. Deleting the alerts reduces the
+count. For information about symbols that are used to indicate severity statuses, see Device health statuses  on page 38.
+Click a severity symbol to view all events in that severity category on the Alerts page. To view all the events, click All
+events . See Managing device alerts .
+● H—Total number of device warranties in Critical (expired) and in Warning (expiring soon) statuses. See Managing device
+warranty .
+● I—Username of the user who is currently logged in. Pause the pointer over the username to view the roles that are assigned
+to the user. For more information about the role-based users, see Role and scope based access control in OpenManage
+Enterprise on page 15. Click to log out, and then log in as a different user.
+● J—Currently, the context-sensitive help file is displayed only for the page you are on, and not the Home portal pages. Click
+to view task-based instructions to effectively use links, buttons, dialog boxes, wizards, and pages in OpenManage Enterprise.
+● K—Click to view the current version of OpenManage Enterprise installed on the system. Click Licenses  to read through
+the message. Click appropriate links to view and download OpenManage Enterprise-related open-source files, or other
+open-source licenses.
+● L—Click the symbol to pin or unpin the menu items. When unpinned, to pin the menu items, expand the OpenManage
+Enterprise  menu and click the pin symbol.
+Data about items that are listed in a table can be comprehensively viewed, exported in total, or based on selected items.
+See Export all or selected data  on page 63. When displayed in blue text, in-depth information about items in a table can be
+viewed and updated, which either opens in the same window or on a separate page. Tabulated data can be filtered by using the
+Advanced Filters  feature. The filters vary based on the content you view. Enter or select data from the fields. Incomplete text
+or numbers will not display the expected output. Data matching the filter criteria is displayed in the list. To remove filters, click
+Clear All Filters .
+To sort data in a table, click the column title. You cannot sort or export data that is retrieved by using the Search Everything
+feature.
+Symbols are used to identify major main items, dashboard, status of device health, alert category, firmware and driver
+compliance status, connection state, power status, and others. Click the forward and backward buttons of the browser to
+navigate between pages on OpenManage Enterprise. For information about supported browsers, see the Dell EMC OpenManage
+Enterprise Support Matrix  available on the support site.
+Where appropriate, the page is split into left, working, and right panes to simplify the task of device management. Where
+necessary, online instructions and tool-tips are displayed when the pointer is paused over a GUI element.
+Preview a
+FAILED
+
+========================================= FAILURES ==========================================
+___________________ test_real_pdf_executes_black_box_knowledge_runtime_v1 ___________________
+
+    def test_real_pdf_executes_black_box_knowledge_runtime_v1() -> None:
+        print(f"\n{_SEPARATOR}")
+        print(
+            "ALHF KNOWLEDGE FOUNDATION V1 - "
+            "LIVE BLACK-BOX DEMO"
+        )
+        print(_SEPARATOR)
+
+        print(f"[USER] Source : {_SOURCE}")
+        print(f"[USER] Query  : {_QUERY}")
+
+        assert _SOURCE.is_file(), (
+            "V1 acceptance PDF must exist at repository root: "
+            f"{_SOURCE}"
+        )
+
+        print(
+            "\n[ALHF] Building deterministic V1 "
+            "Knowledge runtime..."
+        )
+
+        runtime = KnowledgeRuntimeBootstrap().build()
+
+        print("[ALHF] Runtime ready.")
+
+        print(
+            "\n[ALHF] Ingesting customer "
+            "Knowledge source..."
+        )
+
+        ingestion = runtime.ingest(
+            str(_SOURCE)
+        )
+
+        _print_ingestion(
+            ingestion
+        )
+
+        assert (
+            ingestion.status
+            is KnowledgeIngestionStatus.COMPLETED
+        )
+        assert ingestion.acquired_count == 1
+        assert ingestion.parsed_count == 1
+        assert ingestion.normalized_count == 1
+        assert ingestion.derived_count > 0
+        assert (
+            ingestion.represented_count
+            == ingestion.derived_count
+        )
+        assert (
+            ingestion.indexed_count
+            == ingestion.represented_count
+        )
+        assert ingestion.failed_resource_count == 0
+
+        print(
+            "\n[ALHF] Executing Knowledge query..."
+        )
+
+        context, evaluation = runtime.query(
+            _QUERY
+        )
+
+        _print_query(
+            context,
+            evaluation,
+        )
+
+        assert context.evidence_count > 0
+        assert context.size_bytes > 0
+        assert context.evidence_refs
+
+        retrieved_text = context.content.decode(
+            "utf-8"
+        ).lower()
+
+        assert "8,000" in retrieved_text
+>       assert "managed devices" in retrieved_text
+E       assert 'managed devices' in 'ob\n\u2022 delete a device discovery job\ndiscover servers automatically by using the server-\ninitiated discovery feature\nopenmanage enterprise allows automatic discovery of servers that have idrac firmware version 4.00.00.00 or later. the\nappliance can be configured to allow these servers to automatically locate the console by querying the dns and initiate their\ndiscovery .\nfor a server-initiated discovery, the following prerequisites must be met:\n\u25cf this feature is applicable only for servers with idrac firmware version 4.00.00.00 or later.\n\u25cf the servers must be on the same domain or subdomain as openmanage enterprise.\n\u25cf openmanage enterprise must be registered with the dns to add the configuration information to the dns by using tui. it is\npreferred that the dns allows automatic updates from openmanage enterprise.\n\u25cf old records of the appliance console on the dns, if any, should be cleaned up to avoid multiple announcements from the\nservers.\nnote:  scope-based access control (sbac) does not affect the device listings on the monitor  > server initiated\ndiscovery  page and the device managers would see devices which are beyond their scope on this page.\nthe following steps are followed for an automatic discovery of servers in openmanage enterprise :\n1. add the configuration information of openmanage enterprise on the dns using one of following methods:\n\u25cf tui\u2014by using the tui interface, enable the configure server initiated discovery  option. for more information, see\nconfigure openmanage enterprise by using text user interface  on page 26.\n\u25cf manually\u2014add the following four records to your dns server on the network for which the interface is configured on\nthe appliance. ensure that you replace all instances of <domain>  or <subdomain.domain>  with the appropriate dns\ndomain and the system hostname.\n\u25cb <ome hostname>.<domain> 3600 a <ome ip address>\n\u25cb _dcimprovsrv._tcp.<domain> 3600 ptr ptr.dcimprovsrv._tcp.<domain>\n\u25cb ptr.dcimprovsrv._tcp.<domain> 3600 txt uri=/api/discoveryconfigservice/actions/\ndiscoveryconfigservice.signalnodepresence\n\u25cb ptr.dcimprovsrv._tcp.<domain> 3600 srv 0 0 443 <hostname>.<domain>\nto create the records with nsupdate  in linux, use the following commands:\n\u25cb to create hostname record\n>update add omehost.example.com 3600 a xx.xx.xx.xx\n\u25cb to add records for server-initiated discovery\n>update add _dcimprovsrv._tcp.example.com 3600 ptr ptr.dcimprovsrv._\ntcp.example.com.\n>update add ptr.dcimprovsrv._tcp.example.com 3600 txt uri=/api/\ndiscoveryconfigservice/actions/discoveryconfigservice.signalnodepresence\n>update add ptr.dcimprovsrv._tcp.example.com 3600 srv 0 0 443 \nomehost.example.com.\nto create the records with dnscmd  on a windows dns server, use the following commands:\n40 discovering devices for monitoring or management\n\n\u25cb to create hostname record\n>dnscmd <dnsserver> /recordadd example.com omehost a xx.xx.xx.xx\n\u25cb to add records for server-initiated discovery\n>dnscmd <dnsserver> /recordadd example.com _dcimprovsrv._tcp ptr \nptr.dcimprovsrv._tcp.example.com\n>dnscmd <dnsserver> /recordadd example.com ptr.dcimprovsrv._tcp txt uri=/api/\ndiscoveryconfigservice/actions/discoveryconfigservice.signalnodepresence\n>dnscmd <dnsserver> /recordadd example.com ptr.dcimprovsrv._tcp srv 0 0 443 \nomehost.example.com\n2. by default, the discovery-approval policy, in the appliance, is set to automatic and the servers that establish contact with\nthe console are automatically discovered. to change the settings, see manage console preferences  on page 157.\n3. once the appliance is configured as mentioned in the previous steps, the servers can initiate contact with openmanage\nenterprise by querying the dns. the appliance verifies the servers after ensuring that the client certificate of the servers is\nsigned by the dell ca.\nnote:  if there are any changes in the server ip address or ssl certificate, the server reinitiates contact with\nopenmanage enterprise.\n4. the monitor  > server initiated discovery  page lists the servers that establish contact with the console. also, the servers\nwhose credentials have been added in the console, but which are yet to initiate contact are also listed. the following\nstatuses of the servers based on the previously mentioned conditions are displayed:\n\u25cf announced\u2014server initiates contact with the console, however, the credentials of the server are not added to the\nconsole.\n\u25cf credentials added\u2014the credentials of the server are added in the console, however, the server has not initiated contact\nwith the console.\n\u25cf ready to discover\u2014the credentials of the server are added and the server has initiated contact.\nnote:  the appliance triggers a discovery job every 10 minutes to discover all the servers in the \'ready to discover\'\nstatus. however, if the discovery-approval policy in the appliance is set as \'manual,\' then the user should manually\ntrigger the discovery job for each server. for more information, see manage console preferences  on page 157\n\u25cf job submitted for discovery\u2014this status indicates that the discovery job is initiated either automatically or manually for\nthe server.\n\u25cf discovered\u2014the server is discovered and is listed on the all devices page.\nthe following tasks can be performed on the monitor  > server initiated discovery  page:\n1. import \u2014to import the server credentials:\na. click import .\nb. in the import from file wizard, click upload service tags file  to navigate and select the .csv file.\nto view a sample csv file of the server credentials, click download sample csv file .\nc. click finish\n2. discover \u2014to manually discover the servers in \'ready to discover\' status:\na. select the servers listed on the server-initiated discovery page which are in \'ready to discover\' status.\nb. click discover .\na discover job is triggered to discover the servers and post discovery these servers are listed on the all devices page.\n3. delete \u2014to delete the servers listed on the server-initiated discovery page:\na. select the servers on the server-initiated discovery page which are already discovered and listed on the all devices\npage.\nb. click delete.\nthe servers are deleted from the server-initiated discovery page.\nnote:  entries corresponding to discovered servers are automatically be purged after 30 days.\n4. export \u2014to export the server credentials in html, csv, or pdf formats:\na. select one or more servers on the sever-initiated discovery page.\nb. click export .\ndiscovering devices for monitoring or management 41\n\nc. in the export all wizard, select any of the following file formats: html, csv, and pdf.\nd. click finish . a job is created, and the data is exported to the selected location.\ncreate a device discovery job\nthe following steps describes how to initiate a device discovery job in openmanage enterprise to discover the devices in your\ndata center using the create discovery job wizard.\nnote:  to perform any tasks on openmanage enterprise, you must have necessary user privileges. see role and scope\nbased access control in openmanage enterprise on page 15.\n1. to initiate the create discovery job you can do one of the following steps:\n\u25cf click monitor  > discovery  > create .\n\u25cf alternatively, from the all devices page ( openmanage enterprise  > devices ), click the discovery  drop-down menu\nand click discover devices .\n2. in the create discovery job  dialog box, a default job name is populated. to change it, enter the discovery job name.\nby default, the dialog box enables you to define properties of similar devices at a time.\n\u25cf to include more devices or ranges to the current discovery job, click add. another set of the following fields is displayed\nwhere you can specify the device properties: type, ip/hostname/range, and settings.\nwarning:  a maximum of 8,000 devices can be managed by openmanage enterprise. hence, do not\nspecify large networks that have devices more than the maximum number of devices supported by\nopenmanage enterprise. it may cause the system to abruptly stop responding.\nnote:  when discovering a large number of devices, avoid creating multiple discovery jobs using individual ip address\nand instead use ip range of the devices.\n\u25cf to discover devices by importing ranges from the .csv file. see specify multiple devices by importing data from the .csv\nfile  on page 46.\n\u25cf to exclude certain devices, remove devices from being excluded, or to view the list of devices excluded from being\ndiscovered, see globally excluding device(s) from discovery results .\n3. from the device type  drop-down menu, to discover:\n\u25cf a server, select server . see specifying discovery mode for creating a server discovery job .\n\u25cf a chassis, select chassis . see specifying discovery mode for creating a chassis discovery job .\n\u25cf a dell emc storage device, or network switch, select dell storage , or networking switch . see specifying\ndiscovery mode for creating a storage, dell storage, and network switch discovery job .\n\u25cf to discover devices by using multiple protocols, select multiple . see specify discovery mode for creating a multiple\nprotocol discovery job  on page 51.\n4. in the  ip/hostname/range  box, enter the ip address, host name, or the range of ip address to be discovered or included.\nfor more information about the data you can enter in this field, click the i symbol.\nnote:\n\u25cf the range size is limited to 16,385 (0x4001).\n\u25cf ipv6 and ipv6 cidr formats too are supported.\n5. in the settings  section, enter the username and password of the protocol that is used for discovering the ranges.\n6. click additional settings , to select a different protocol, and change the settings.\n7. in the scheduling discovery job  section, run the job immediately or schedule for a later point of time. see schedule job\nfield definitions  on page 172.\n8. select enable trap reception from discovered idrac servers and mx7000 chassis  to enable the openmanage\nenterprise receive the incoming traps from the discovered servers and mx7000 chassis.\nnote:  enabling this setting will enable alerts on the idrac (if disabled), and set an alert destination for the\nopenmanage enterprise server\'s ip address. if there are specific alerts that need to be enabled, you must configure\nthese on the idrac by enabling the appropriate alert filers and snmp traps. for more information, see the idrac user\'s\nguide.\n9. select set community string for trap destination from application settings . this option is available only for the\ndiscovered idrac servers and mx7000 chassis.\n10. select the email when complete  check box, and then enter the email address that must receive notification about the\ndiscovery job status. if the email is not configured, the go to smtp settings  link is displayed. click the link, and configure\n42 discovering devices for monitoring or management\n\nthe smtp settings. see configure smtp, snmp, and syslog alerts  on page 116. if you select this but do not configure\nsmtp, the finish  button is not displayed to continue the task.\n11. click finish . the finish button is not displayed if the fields are incorrectly or incompletely filled.\na discovery job is created and run. the status is displayed on the job details  page.\nduring device discovery, the user account that is specified for the discovery range is verified against all available privileges that\nare enabled on a remote device. if the user authentication passes, the device is automatically onboarded or the device can be\nonboarded later with different user credentials. see onboarding devices  on page 43.\nnote:  during cmc discovery, the servers, and iom and storage modules (configured with ip and snmp set to "public"\nas community string), residing on cmc are also discovered and are onboarded. if you enable trap reception during cmc\ndiscovery, the openmanage enterprise is set as the trap destination on all the servers and not on the chassis.\nnote:  during cmc discovery, fn i/o aggregators in programmable mux (pmux) mode are not discovered.\nonboarding devices\nonboarding enables servers to be managed, rather than just be monitored.\n\u25cf if administrator-level credentials are provided during discovery, the servers are onboarded (the device status is displayed as\n"managed" in the all devices view).\n\u25cf if lower privileged credentials are provided during discovery, the servers are not onboarded (the status is displayed as\n"monitored" in the all devices view).\n\u25cf if the console is also set as a trap receiver on the servers then their onboarding status is indicated as "managed with alerts".\n\u25cf error : indicates an issue in onboarding the device.\n\u25cf proxied : available only for mx7000 chassis. indicates that the device is discovered through an mx7000 chassis and not\ndirectly.\nif you want to onboard devices with a different user account apart from the account specified for discovery, or re-attempt\nonboarding because of a failure in onboarding during discovery, do the following:\nnote:\n\u25cf all devices that have been onboarded through this wizard remain onboarded through this user account and is not\nsubstituted by the discovery user account during future discoveries against these devices.\n\u25cf for the already discovered devices, if the snmp trap destination is \'manually\' set in idrac as openmanage enterprise,\nthe alerts are received and processed by the appliance. however, the device\'s managed state displayed on the all\ndevices page remains the same as its initial discovered state of \'monitored,\' \'managed\' or \'managed with alerts.\'\n\u25cf the all devices page displays the managed state  of all the onboarded chassis as "managed" irrespective of which\nchassis user-role credentials were used at the time of onboarding. if the chassis was onboarded with credentials of a\n"read-only" user, then there may be a failure during update activities performed on chassis. hence, it is recommended to\nonboard chassis with credentials of a chassis administrator to perform all activities.\n\u25cf to perform any tasks on openmanage enterprise, you must have necessary user privileges. see role and scope based\naccess control in openmanage enterprise on page 15.\n1. from the openmanage enterprise  menu, under devices , click all devices .\na donut chart indicates status of all devices in the working pane. see the donut chart . the table lists the properties of\ndevices selected along with their following onboarding status:\n\u25cf error : device cannot be onboarded. try by logging in by using the recommended privileges. see role and scope based\naccess control in openmanage enterprise on page 15.\n\u25cf managed : device successfully onboarded, and can be managed by the openmanage enterprise console.\n\u25cf monitored : device does not have management option (such as the one discovered by using snmp).\n\u25cf managed with alerts : device is successfully onboarded, and the openmanage enterprise console has successfully\nregistered its ip address with the device as a trap destination during discovery.\n2. in the working pane, select a check box corresponding to the device(s), click more actions  > onboarding .\nensure that you select only the device types from the all devices page that are supported for onboarding. you can search\nfor suitable devices in the table by clicking advanced filters , and then select or enter onboarding status data in the filter\nbox.\nnote:  all devices that are discovered are not supported for onboarding and only idrac and cmc are supported.\nensure that you select onboarding option for the supported device type.\ndiscovering devices for monitoring or management 43\n\n3. in the onboarding  dialog box, enter the ws-man credentials\u2014username and password.\n4. in the connection settings  section:\na. in the retries  box, enter the number of repeated attempts that must be made to discover a server.\nb. in the timeout  box, enter the time after which a job must stop running.\nnote:  if the timeout value entered is greater than the current session expiry time, you are automatically logged\nout of openmanage enterprise. however, if the value is within the current session expiration timeout window, the\nsession is continued and not logged out.\nc. in the port  box, enter the port number that the job must use to discover.\nd. optional field. select enable common name (cn) check .\ne. optional field. select enable certificate authority (ca) check  and browse to the certificate file.\n5. click finish .\nnote:  the enable t\n\nroup .\n\u25cf click group actions  > create custom group  > static group  .\n2. in the create static group wizard  dialog box, enter a name and description (optional) for the group, and then select a\nparent group under which the new static group must be created.\nnote:  the static or dynamic group names and server configuration related names in openmanage enterprise must be\nunique (not case-sensitive). for example, name1  and name1  cannot be used at the same time.\n3. click next .\n4. from the group member selection dialog box, select the devices that must be included in the static group.\n5. click finish .\n54 manage devices and device groups\n\nthe static group is created and listed under the parent group in the left pane. the child groups are indented from its parent\ngroup.\ncreate a query device group\nquery groups are dynamic groups whose devices are defined by matching some user-specified criteria. devices in the group\nchange based on the result of devices that are discovered by using the query criteria. on the all devices page ( openmanage\nenteprise  > devices ), you can create query groups using the create query group wizard.\nnote:  to perform any tasks on openmanage enterprise, you must have necessary role-based user privileges and scope-\nbased operational access to the devices. see role and scope based access control in openmanage enterprise on page 15.\n1. to activate the create query group wizard, you can do one of the following:\n\u25cf under custom groups, either right click on query groups  or click the three dots vertical menu next to the query\ngroups, and then click create new query group.\n\u25cf click group actions  > create custom group  > query group .\n2. in the create query group wizard  dialog box, enter a name  and description (optional) for the group.\n3. click next .\n4. in the query criteria selection  dialog box, from the select existing query to copy drop-down menu, select a query, and\nthen select the other filter criteria. see select a query criteria  on page 55.\n5. click finish .\nthe query group is created and listed under the query group section in the left pane.\nselect a query criteria\ndefine filters while creating query criteria for:\n\u25cf generating customized reports. see creating reports  on page 134.\n\u25cf creating query-based device groups under the custom groups. see create a query device group  on page 55.\ndefine the query criteria by using two options:\n\u25cf select existing query to copy : by default, openmanage enterprise provides a list of built-in query templates that you can\ncopy and build your own query criteria. a maximum of 6 criteria (filters) can be used while defining a query. to add filters,\nyou must select from the select type  drop-down menu.\n\u25cf select type : build a query criteria from scratch by using attributes listed in this drop-down menu. items in the menu depend\non the devices monitored by openmanage enterprise. when a query type is selected, only appropriate operators such as\n=, >, <, and null are displayed based on the query type. this method is recommended for defining query criteria in building\ncustomized reports.\nnote:  when evaluating a query with multiple conditions, the order of evaluation is same as sql. to specify a particular\norder for the evaluation of the conditions, add or remove parenthesis when defining the query.\nnote:  when selected, the filters of an existing query criteria is copied only virtually to build a new query criteria. the\ndefault filters associated with an existing query criteria is not changed. the definition (filters) of a built-in query criteria is\nused as a starting point for building a customized query criteria. for example:\n1. query1  is a built-in query criteria that has the following predefined filter: task enabled=yes .\n2. copy the filter properties of query1 , create query2 , and then customize the query criteria by adding another filter: task\nenabled=yes  and (task type=discovery) .\n3. later, open query1 . its filter criteria still remains as task enabled=yes .\n1. in the query criteria selection  dialog box, select from the drop-down menu based on whether you want to create a query\ncriteria for query groups or for report generation.\n2. add or remove a filter by clicking the plus or dustbin symbol respectively.\n3. click finish .\na query criteria is generated and saved in the list of existing queries. an audit log entry is made and displayed in the audit\nlogs list. see monitor audit logs  on page 120.\nrelated information\nmanaging the device configuration compliance  on page 104\nedit a configuration compliance baseline  on page 108\nmanage devices and device groups 55\n\nremove a configuration compliance baseline  on page 110\nedit a static group\non the all devices page ( openmanage enterprise  > devices ) the existing static groups can be renamed, repositioned, and\nthe devices in the static group can be added or deleted using the edit static group wizard.\nnote:  to perform any tasks on openmanage enterprise, you must have necessary role-based user privileges and scope-\nbased operational access to the devices. see role and scope based access control in openmanage enterprise on page 15.\n1. right-click on the static group or click on the three vertical dots menu next to the static group, and then click edit  to\nactivate the edit static group wizard.\n2. in the edit static group wizard, you can edit the name, description, and parent group.\n3. click next .\n4. in the group member selection screen, you can check or uncheck the devices to include or exclude them from the static\ngroup.\n5. click finish .\nthe changes made to the static group are implemented.\nedit a query group\non the all devices page ( openmanage enterprise  > all devices ), the existing query group can be renamed, repositioned, and\nthe query criteria based on which the devices are included in the query group can be edited using the edit query group wizard.\nto perform any tasks on openmanage enterprise, you must have necessary role-based user privileges and scope-based\noperational access to the devices. see role and scope based access control in openmanage enterprise on page 15.\n1. under custom groups, right-click on the query group or click on the three vertical dots menu next to the query group\nand then click edit .\n2. in the edit query group wizard, make changes to the name, description as needed.\n3. click next .\n4. in the query criteria selection dialog box, from the select existing query to copy  drop-down menu, select a query, and\nthen select the other filter criteria.\n5. click finish .\nthe changes made to the query group are implemented.\nrename a static or query group\nto rename a static or query group on the all devices page ( openmanage enterprise  > devices ):\n1. under custom groups , right-click a static or query group or click on the three dots next to the group you want to\nrename, and then click rename . or, select a group and then click group actions  > rename group .\n2. in the rename group  dialog box, enter a new name for the group.\n3. click finish\nthe updated name is listed in the left pane.\ndelete a static or query device group\non the all devices page ( openmanage enterprise  > devices ), you can delete an existing static or query group as follows:\nto perform any tasks on openmanage enterprise, you must have necessary role-based user privileges and scope-based\noperational access to the devices. see, role and scope based access control in openmanage enterprise on page 15.\nnote:  this procedure is applicable only for deleting a static or query group, however the devices in the group would not be\ndeleted from the all devices page. to remove devices from openmanage enterprise, see delete devices from openmanage\nenterprise  on page 60.\n56 manage devices and device groups\n\n1. under custom groups , right-click the static or query group or click on the three dots vertical menu next to the group\nand then click delete . or, select the group you want to delete, and then from the group actions  drop-down menu and\nclick delete group .\n2. when prompted, click yes.\nthe group is deleted from the custom groups.\nclone a static or query group\nthe existing static or query groups can be cloned and added to the custom groups.\nnote:  to perform any tasks on openmanage enterprise, you must have necessary role-based user privileges and scope-\nbased operational access to the devices. see role and scope based access control in openmanage enterprise on page 15\n1. right-click on the static or query group or click on the tree dots vertical menu next to the static or query group, and then\nclick clone .\n2. in the clone group  dialog box, enter a name and description for the group. additionally for static group, select a parent\ngroup under which the cloned static must be created.\n3. click finish .\nthe cloned group is created and listed under the parent group in the left pane.\nadd devices to a new group\nyou can create a new group and add devices to it from the device list table available on the all devices page.\nto perform any tasks on openmanage enterprise, you must have necessary role-based user privileges and scope-based\noperational access to the devices. see role and scope based access control in openmanage enterprise on page 15.\n1. from the openmanage enterprise  menu, click devices .\nall devices page is displayed.\n2. in the devices list, select the check box corresponding to the device(s), and then click group actions  > add to new\ngroup .\na. in the add devices to new group wizard  dialog box, enter the name , description (optional), and select the parent\ngroup  under which the new child group will be created. for more information about groups, see device groups .\nb. to add more devices to the group, click next . else, go to step 3.\n3. in the group member selection dialog box, select more devices from the add devices list.\nafter you select devices under the all devices  tab, the selected devices are listed under all selected devices .\n4. click finish .\na new group is created and the devices are added to the selected group.\nnote:  for creating groups or adding devices to a group, you must follow the parent-child relationship of groups. see\ndevice groups .\nadd devices to existing group\nyou can add devices to an existing group from the device list table available on the all devices page.\nnote:  to perform any tasks on openmanage enterprise, you must have necessary role-based user privileges and scope-\nbased operational access to the devices. see role and scope based access control in openmanage enterprise on page 15.\n1. from the openmanage enterprise  menu, click devices .\nall devices page is displayed.\n2. in devices list, select the check box corresponding to the device(s), and then click group actions  > add to existing\ngroup .\n3. in the add selected devices to existing group  dialog box, enter or select data. for more information about groups, see\ndevice groups .\n4. click finish .\nthe devices are added to the selected existing group.\nnote:  for creating groups or adding devices to a group, you must follow the parent-child relationship of groups. see\ndevice groups .\nmanage devices and device groups 57\n\nrefresh health on group\nthe following steps describe how you can refresh the health and online status of a selected group.\nnote:\n\u25cf to perform any tasks on openmanage enterprise, you must have necessary role-based user privileges and scope-based\noperational access to the devices. see role and scope based access control in openmanage enterprise on page 15.\n\u25cf for the in-band devices discovered using the esxi and linux operating systems, the health state (\n ) is displayed as\nunknown (\n  ).\n1. go to the all devices page by clicking openmanage enterprise  > devices .\n2. on the left pane, select the group on which you want to refresh the health.\nafter selection of the group, the devices\' list will list the selected group\'s devices.\n3. click the refresh heatlh drop-down menu and then click refresh health on group . the health wizard is displayed.\n4. in the health wizard, job name  displays the appliance-generated job name for the refresh-health task. if needed, you can\nchange the job name.\n5. the select group  drop down will show the group that you had selected.\n6. from the scheduling drop down, you can select one of the following options:\na. run now \u2014 to immediately run the refresh health on the selected group.\nb. run later \u2014 you can select run later and then select the date and time when the refresh health job on the group will\nrun.\nc. run on schedule \u2014 you can select this option then choose the daily or weekly and select a time if you want to refresh\nthe health on the group on daily or weekly basis at a particular time.\na job to refresh the health and online status of the group is created. you can view the job details on the jobs page\n(openmanage enterprise  > monitor  > jobs ).\nall devices page - devices list\nthe list of devices displays the device properties such as ip address and service tag. you can select a maximum of 25 devices\nper page and navigate the pages to select more devices and perform tasks. for more information about the tasks you can\nperform on the all devices page, see all devices page \u2014 device list actions  on page 59.\nnote:  by default, the devices list displays all the devices considered while forming the donut chart. to view a list of\ndevices that belong to a specific health status, click the corresponding color band in the donut chart, or click the health\nstatus symbol. devices that belong only to the selected category are listed.\n\u25cf health state  indicates the working state of the device. the health statuses\u2014normal, critical, and warning\u2014are identified\nby respective color symbols. see device health statuses  on page 38\n\u25cf power state  indicates if the device is turned on or off\n\u25cf connection state  indicates whether or not the device is connected to openmanage enterprise\n\u25cf name  indicates device name.\n\u25cf ip address  indicates the ip address of the idrac installed on the device\n\u25cf identifier  indicates the service tag of the device\n\u25cf model  indicates the model number\n\u25cf type  indicates the type of device\u2014server, chassis, dell storage, and networking switch\n\u25cf chassis name  indicates chassis name\n\u25cf slot name  indicates the slot name for the chassis devices\n\u25cf managed state  column indicates if the device is monitored, managed, or is proxied. see discovering devices for monitoring\nor management  on page 39.\nto filter data in the table, click advanced filters  or the filter symbol. to export data to html, csv, or pdf file format, click\nthe export symbol in the upper-right corner.\nnote:  in the devices list, click the device name or ip address to view device configuration data, and then edit. see view\nand configure individual devices  on page 64.\nnote:  the working pane displays the donut chart of the selected device group. by using the donut chart, you can view\nthe list of devices that belongs to other health statuses in that group. to view devices of other health status, click the\n58 manage devices and device groups\n\ncorresponding color band on the donut chart. the data in the table changes. for more information about using the donut\nchart, see donut chart .\nall devices page \u2014 device list actions\non the all devices page ( openmanage enterprise  > devices ) devices list, you can perform various device actions.\nthe action buttons are context sensitive to both the group selection from the tree on the left and also for the devices selected\nin the grid. so if the action is group related, for example group actions such as \'run inventory on group\' roup and \'refresh\nhealth on group\' \u2014 will default to the selected group. all device actions will default to the selected devices. however, few\nactions such as discovery are always applicable without any selection. also, the type of actions available per device depend on\nthe type of device selected.\nnote:  to perform any tasks on openmanage enterprise, you must have necessary role-based user privileges and scope-\nbased operational access to the devices. see role and scope based access control in openmanage enterprise on page 15.\n\u25cf from group actions  drop-down, you can:\n\u25cb create custom device groups. see create a custom group (static or query)  on page 54.\n\u25cb create static groups. see create a static device group  on page 54.\n\u25cb create query groups. see create a quer\n\ndeletion or reduction\nof the expanded disk space is not supported. to\nremove a newly added disk or to reverse the increase\nin size of an existing disk you must revert to prior vm\nsnapshot.\n\u25cf if the initial scan detects no unallocated space, then\nallocate additional disk space or disks to the console on\nyour hypervisor and rescan.\n\u25cf scanning and allocation of disk space is limited to a\nmaximum of four disks.\nenable field service debug (fsd) mode select enable field service debug (fsd) mode  for console\ndebugging. for more information, see field service debug\nworkflow  on page 174.\n28 get started with openmanage enterprise\n\ntable 7. text user interface options (continued)\noptions descriptions\nrestart services select restart services  with the following options to restart\nthe services and networking:\n\u25cf restart all services\n\u25cf restart networking\nsetup debug logging select setup debug logging  using the following options :\n\u25cf enable debug logs \u2014to collect the debug logs of\nthe application monitoring tasks, events, and the task\nexecution history.\n\u25cf disable debug logs \u2014to disable the debug logs.\n\u25cf enable scp retention \u2014to collect the template .xml\nfiles.\n\u25cf disable scp retention \u2014to disable the scp retention.\nyou can download the debug logs by clicking monitor  > audit\nlogs  > export  > export console logs  in openmanage\nenterprise.\nchange keyboard layout select change keyboard layout to change the keyboard\nlayout if needed.\nreboot the appliance select reboot the appliance  to restart the appliance.\nnote:  after running a command to restart the services,\nthe tui may display the following message: nmi\nwatchdog: bug: soft lockup - cpu#0 stuck\nfor 36s! [java:14439].\nthe soft lockup issue likely occurs as a result of the\nhypervisor being overloaded. in such situations, it is\nrecommended to have at least 16 gb of ram and cpu\nof 8000 mhz reserved to the openmanage enterprise\nappliance. it is also recommended that the openmanage\nenterprise appliance be restarted when this message is\ndisplayed.\nconfigure openmanage enterprise\nif you are logging in to openmanage enterprise for the first time, the welcome to openmanage enterprise  page is displayed,\nwhich allows setting of time (either manually or using ntp time synchronization) and proxy configurations.\n1. to configure the time manually do the following in the time configuration  section:\n\u25cf use the timezone  drop down menu to select an appropriate timezone.\n\u25cf in the date  box, enter or select a date.\n\u25cf in the time  box, fill the time.\n\u25cf click apply  to save the settings.\n2. if you want to use the ntp server for time synchronization, do the following in the time configuration  section:\nnote:  when the ntp server settings are updated, the currently logged in users are automatically logged out from their\nopenmanage enterprise sessions.\n\u25cf select the use ntp check box.\n\u25cf enter the ip address or hostname in primary ntp server address  and secondary ntp server address  (optional) for\ntime synchronization\n3. if you want to set proxy server for external communication, in the proxy configuration section do the following:\n\u25cf select the enable http proxy settings  check box.\n\u25cf enter the proxy address .\n\u25cf enter the port number for the proxy server.\nget started with openmanage enterprise 29\n\n\u25cf if the proxy server requires credentials to log in, select the  enable proxy authentication  check box and enter the user\nname and password.\n\u25cf select the ignore certificate validation  check box if the configured proxy intercepts ssl traffic and does not use\na trusted third-party certificate. using this option will ignore the built-in certificate checks used for the warranty and\ncatalog synchronization.\n4. click apply  to save the settings.\nnote:  for information about supported browsers, see the openmanage enterprise support matrix  available on the support\nsite.\nrecommended scalability and performance settings\nfor optimal usage of openmanage enterprise\nthe following table lists the performance parameters of the supported features in openmanage enterprise. to ensure an optimal\nperformance of openmanage enterprise, dell emc recommends to run the tasks at the specified frequency on the maximum\nnumber of devices that are recommended per task.\ntable 8. scalability and performance considerations of openmanage enterprise \ntasks recommended frequency\nof running the tasks\ntasks whether precanned? maximum devices that are\nrecommended per task.\ndiscovery once a day for environment\nwith frequent network\nchanges.\nno 10,000/task\ninventory openmanage enterprise\nprovides a precanned task\nthat automatically refreshes\ninventory once a day.\nyes. you can disable this\nfeature.\ndevices that are monitored by\nopenmanage enterprise.\nwarranty openmanage enterprise\nprovides a precanned task\nthat automatically refreshes\nwarranty once a day.\nyes. you can disable this\nfeature.\ndevices that are monitored by\nopenmanage enterprise.\nhealth poll every one hour yes. you can change the\nfrequency.\nnot applicable\nfirmware/driver update need-basis 150/task\nconfiguration inventory need-basis 1500/baseline\nsupported protocols and ports in openmanage\nenterprise\nsupported protocols and ports on management stations\ntable 9. openmanage enterprise supported protocols and ports on management stations \nport\nnumber\nprotocol port type maximum\nencryption\nlevel\nsource direction destination usage\n22 ssh tcp 256-bit management\nstation\nin openmanage\nenterprise\nappliance\n\u25cf required for\nincoming only if\nfsd is used.\nopenmanage\nenterprise\n30 get started with openmanage enterprise\n\ntable 9. openmanage enterprise supported protocols and ports on management stations (continued)\nport\nnumber\nprotocol port type maximum\nencryption\nlevel\nsource direction destination usage\nadministrator must\nenable only if\ninteracting with\nthe dell emc\nsupport staff.\n25 smtp tcp none openmanage\nenterprise\nappliance\nout management\nstation\n\u25cf to receive\nemail alerts\nfrom openmanage\nenterprise.\n53 dns udp/tcp none openmanage\nenterprise\nappliance\nout management\nstation\n\u25cf for dns queries.\n68 / 546\n(ipv6)\ndhcp udp/tcp none openmanage\nenterprise\nappliance\nout management\nstation\n\u25cf network\nconfiguration.\n80* http tcp none management\nstation\nin openmanage\nenterprise\nappliance\n\u25cf the web gui\nlanding page. this\nwill redirect a user\nto https (port\n443).\n123 ntp tcp none openmanage\nenterprise\nappliance\nout ntp server \u25cf time\nsynchronization (if\nenabled).\n137, 138,\n139, 445\ncifs udp/tcp none idrac/ cmc in openmanage\nenterprise\nappliance\n\u25cf to upload\nor download\ndeployment\ntemplates.\n\u25cf to upload tsr and\ndiagnostic logs.\n\u25cf to download\nfirmware/driver\ndups, and fsd\nprocess.\n\u25cf boot to network\niso.\nopenmanage\nenterprise\nappliance\nout cifs share \u25cf to import\nfirmware/driver\ncatalogs from\ncifs share.\n111, 2049\n(default)\nnfs udp/tcp none openmanage\nenterprise\nappliance\nout external nfs\nshare\n\u25cf to download\ncatalog and dups\nfrom the nfs\nshare for firmware\nupdates.\n\u25cf for manual\nconsole upgrade\nfrom network\nshare.\n162* snmp udp none management\nstation\nin/out openmanage\nenterprise\nappliance\n\u25cf event reception\nthrough snmp.\nthe direction is\n\'outgoing\' only if\nget started with openmanage enterprise 31\n\ntable 9. openmanage enterprise supported protocols and ports on management stations (continued)\nport\nnumber\nprotocol port type maximum\nencryption\nlevel\nsource direction destination usage\nusing the trap\nforward policy.\n443\n(default)\nhttps tcp 128-bit ssl management\nstation\nin/out openmanage\nenterprise\nappliance\n\u25cf web gui.\n\u25cf to download\nupdates and\nwarranty\ninformation from\ndell.com. 256-bit\nencryption is\nallowed when\ncommunicating\nwith the\nopenmanage\nenterprise by\nusing https for\nthe web gui.\n\u25cf server-initiated\ndiscovery.\n514 syslog tcp none openmanage\nenterprise\nappliance\nout syslog server \u25cf to send alert\nand audit log\ninformation to\nsyslog server.\n3269 ldaps tcp none openmanage\nenterprise\nappliance\nout management\nstation\n\u25cf ad/ ldap login\nfor global catalog.\n636 ldaps tcp none openmanage\nenterprise\nappliance\nout management\nstation\n\u25cf ad/ ldap login\nfor domain\ncontroller.\n*port can be configured up to 499 excluding the port numbers that are already allocated.\nsupported protocols and ports on managed nodes\ntable 10. openmanage enterprise supported protocols and ports on the managed nodes \nport\nnumber\nprotocol port\ntype\nmaximum\nencryption\nlevel\nsource directio\nn\ndestinatio\nn\nusage\n22 ssh tcp 256-bit openmanage\nenterprise\nappliance\nout managed\nnode\n\u25cf for the linux os, windows, and\nhyper-v discovery.\n161 snmp udp none openmanage\nenterprise\nappliance\nout managed\nnode\n\u25cf for snmp queries.\n162* snmp udp none openmanage\nenterprise\nappliance\nin/ out managed\nnode\n\u25cf send and receive snmp traps.\n443 proprietar\ny/ ws-\nman/\nredfish\ntcp 256-bit openmanage\nenterprise\nappliance\nout managed\nnode\n\u25cf discovery and inventory of\nidrac7 and later versions.\n\u25cf for the cmc management.\n32 get started with openmanage enterprise\n\ntable 10. openmanage enterprise supported protocols and ports on the managed nodes (continued)\nport\nnumber\nprotocol port\ntype\nmaximum\nencryption\nlevel\nsource directio\nn\ndestinatio\nn\nusage\n623 ipmi/\nrmcp\nudp none openmanage\nenterprise\nappliance\nout managed\nnode\n\u25cf ipmi access through lan.\n69 tftp udp none cmc in manageme\nnt station\n\u25cf for updating cmc firmware.\n* port can be configured up to 499 excluding the port numbers that are already allocated.\nnote:  in an ipv6 environment, you must enable ipv6 and disable ipv4 in the openmanage enterprise appliance to ensure\nall the features work as expected.\nuse case links for the supported protocols and ports\nin openmanage enterprise\ntable 11. use case links for the supported protocols and ports in openmanage enterprise \nuse case url\nupgrade openmanage enterprise appliance https://downloads.dell.com/openmanage_enterprise/\naccess device warranty https://apigtwb2c.us.dell.com/prod/sbil/eapi/v5/asset-\nentitlements\nupdate catalogs https://downloads.dell.com/catalog/\npush new alert notifications using the openmanage mobile\napplication\nhttps://openmanagecloud.dell.com\nget started with openmanage enterprise 33\n\nopenmanage enterprise graphical user\ninterface overview\non the openmanage enterprise graphical user interface (gui), you can use menu items, links, buttons, panes, dialog boxes,\nlists, tabs, filter boxes, and pages to navigate between pages and complete device management tasks. features such as devices\nlist, donut charts, audit logs, openmanage enterprise settings, system alerts, and firmware/driver update are displayed at\nmore than one place. it is recommended that you familiarize yourself with the gui elements for easily and effectively using\nopenmanage enterprise to manage your data center devices.\n\u25cf a\u2014the openmanage enterprise  menu, on all the pages of openmanage enterprise, provides links to features that enable\nadministrators view the dashboard ( home ), manage devices ( devices ), manage firmware/driver baselines, templates,\nand configuration compliance baselines ( configuration ), create and store alerts ( alerts ), and then run jobs, discover,\ncollect inventory data, and generate reports ( monitor ). you can also customize different properties of your openmanage\nenterprise ( application settings ). click the pin symbol in the upper-right corner to pin the menu items so they appear on\nall the openmanage enterprise pages. to unpin, click the pin symbol again.\n\u25cf b\u2014the dashboard symbol. click to open the dashboard page from any page of openmanage enterprise. alternately, click\nhome . see dashboard .\n\u25cf c\u2014the donut chart gives a snapshot of health status of all the devices monitored by openmanage enterprise. enables you\nto quickly act upon the devices that are in critical state. each color in the chart represents a group of devices having a\nparticular health state. click respective color bands to view respective devices in the devices list. click the device name or ip\naddress to view the device properties page. see view and configure individual devices  on page 64.\n\u25cf d\u2014the symbols used to indicate the device health state. see device health statuses  on page 38.\n\u25cf e\u2014in the search everything  box, enter about anything that is monitored and displayed by openmanage enterprise to view\nthe results such as device ip, job name, group name, firmware/driver baseline, and warranty data on all the devices in your\nscope as defined by the scope based access control (sbac). you cannot sort or export data that is retrieved by using the\nsearch everything feature. on individual pages or dialog boxes, enter or select from the advance filters  section to refine\nyour search results.\n\u25cb the following operators are not supported: +, -, and ".\n\u25cf f\u2014number of openmanage enterprise jobs currently in the queue. jobs that are related to discovery, inventory, warranty,\nfirmware and/or drivers update, and so on. click to view the status of jobs run under health, inventory, and the report\ncategory on the job details page. to view all the events, click all jobs . see using jobs for device control  on page 122. click\nto refresh.\n5\n34 openmanage enterprise graphical user interface overview\n\n\u25cf g\u2014the number of events generated in the alerts log. also, based on your settings to whether or not view the\nunacknowledged alerts, the number of alerts in this section varies. by default, only the unacknowledged alerts are displayed.\nto hide or unhide the acknowledged alerts, see customize the alert display  on page 158. deleting the alerts reduces the\ncount. for information about symbols that are used to indicate severity statuses, see device health statuses  on page 38.\nclick a severity symbol to view all events in that severity category on the alerts page. to view all the events, click all\nevents . see managing device alerts .\n\u25cf h\u2014total number of device warranties in critical (expired) and in warning (expiring soon) statuses. see managing device\nwarranty .\n\u25cf i\u2014username of the user who is currently logged in. pause the pointer over the username to view the roles that are assigned\nto the user. for more information about the role-based users, see role and scope based access control in openmanage\nenterprise on page 15. click to log out, and then log in as a different user.\n\u25cf j\u2014currently, the context-sensitive help file is displayed only for the page you are on, and not the home portal pages. click\nto view task-based instructions to effectively use links, buttons, dialog boxes, wizards, and pages in openmanage enterprise.\n\u25cf k\u2014click to view the current version of openmanage enterprise installed on the system. click licenses  to read through\nthe message. click appropriate links to view and download openmanage enterprise-related open-source files, or other\nopen-source licenses.\n\u25cf l\u2014click the symbol to pin or unpin the menu items. when unpinned, to pin the menu items, expand the openmanage\nenterprise  menu and click the pin symbol.\ndata about items that are listed in a table can be comprehensively viewed, exported in total, or based on selected items.\nsee export all or selected data  on page 63. when displayed in blue text, in-depth information about items in a table can be\nviewed and updated, which either opens in the same window or on a separate page. tabulated data can be filtered by using the\nadvanced filters  feature. the filters vary based on the content you view. enter or select data from the fields. incomplete text\nor numbers will not display the expected output. data matching the filter criteria is displayed in the list. to remove filters, click\nclear all filters .\nto sort data in a table, click the column title. you cannot sort or export data that is retrieved by using the search everything\nfeature.\nsymbols are used to identify major main items, dashboard, status of device health, alert category, firmware and driver\ncompliance status, connection state, power status, and others. click the forward and backward buttons of the browser to\nnavigate between pages on openmanage enterprise. for information about supported browsers, see the dell emc openmanage\nenterprise support matrix  available on the support site.\nwhere appropriate, the page is split into left, working, and right panes to simplify the task of device management. where\nnecessary, online instructions and tool-tips are displayed when the pointer is paused over a gui element.\npreview a'
+
+tests\rag\e2e\test_knowledge_runtime_v1.py:149: AssertionError
+================================== short test summary info ==================================
+FAILED tests/rag/e2e/test_knowledge_runtime_v1.py::test_real_pdf_executes_black_box_knowledge_runtime_v1 - assert 'managed devices' in 'ob\n\u2022 delete a device discovery job\ndiscover servers automatically by using the server-\ninitiated discovery feature\nopenmanage enterprise allows automatic discovery of servers that have idrac firmware version 4.00.00.00 or later. the\nappliance can be configured to allow these servers to automatically locate the console by querying the dns and initiate their\ndiscovery .\nfor a server-initiated discovery, the following prerequisites must be met:\n\u25cf this feature is applicable only for servers with idrac firmware version 4.00.00.00 or later.\n\u25cf the servers must be on the same domain or subdomain as openmanage enterprise.\n\u25cf openmanage enterprise must be registered with the dns to add the configuration information to the dns by using tui. it is\npreferred that the dns allows automatic updates from openmanage enterprise.\n\u25cf old records of the appliance console on the dns, if any, should be cleaned up to avoid multiple announcements from the\nservers.\nnote:  scope-based access control (sbac) does not affect the device listings on the monitor  > server initiated\ndiscovery  page and the device managers would see devices which are beyond their scope on this page.\nthe following steps are followed for an automatic discovery of servers in openmanage enterprise :\n1. add the configuration information of openmanage enterprise on the dns using one of following methods:\n\u25cf tui\u2014by using the tui interface, enable the configure server initiated discovery  option. for more information, see\nconfigure openmanage enterprise by using text user interface  on page 26.\n\u25cf manually\u2014add the following four records to your dns server on the network for which the interface is configured on\nthe appliance. ensure that you replace all instances of <domain>  or <subdomain.domain>  with the appropriate dns\ndomain and the system hostname.\n\u25cb <ome hostname>.<domain> 3600 a <ome ip address>\n\u25cb _dcimprovsrv._tcp.<domain> 3600 ptr ptr.dcimprovsrv._tcp.<domain>\n\u25cb ptr.dcimprovsrv._tcp.<domain> 3600 txt uri=/api/discoveryconfigservice/actions/\ndiscoveryconfigservice.signalnodepresence\n\u25cb ptr.dcimprovsrv._tcp.<domain> 3600 srv 0 0 443 <hostname>.<domain>\nto create the records with nsupdate  in linux, use the following commands:\n\u25cb to create hostname record\n>update add omehost.example.com 3600 a xx.xx.xx.xx\n\u25cb to add records for server-initiated discovery\n>update add _dcimprovsrv._tcp.example.com 3600 ptr ptr.dcimprovsrv._\ntcp.example.com.\n>update add ptr.dcimprovsrv._tcp.example.com 3600 txt uri=/api/\ndiscoveryconfigservice/actions/discoveryconfigservice.signalnodepresence\n>update add ptr.dcimprovsrv._tcp.example.com 3600 srv 0 0 443 \nomehost.example.com.\nto create the records with dnscmd  on a windows dns server, use the following commands:\n40 discovering devices for monitoring or management\n\n\u25cb to create hostname record\n>dnscmd <dnsserver> /recordadd example.com omehost a xx.xx.xx.xx\n\u25cb to add records for server-initiated discovery\n>dnscmd <dnsserver> /recordadd example.com _dcimprovsrv._tcp ptr \nptr.dcimprovsrv._tcp.example.com\n>dnscmd <dnsserver> /recordadd example.com ptr.dcimprovsrv._tcp txt uri=/api/\ndiscoveryconfigservice/actions/discoveryconfigservice.signalnodepresence\n>dnscmd <dnsserver> /recordadd example.com ptr.dcimprovsrv._tcp srv 0 0 443 \nomehost.example.com\n2. by default, the discovery-approval policy, in the appliance, is set to automatic and the servers that establish contact with\nthe console are automatically discovered. to change the settings, see manage console preferences  on page 157.\n3. once the appliance is configured as mentioned in the previous steps, the servers can initiate contact with openmanage\nenterprise by querying the dns. the appliance verifies the servers after ensuring that the client certificate of the servers is\nsigned by the dell ca.\nnote:  if there are any changes in the server ip address or ssl certificate, the server reinitiates contact with\nopenmanage enterprise.\n4. the monitor  > server initiated discovery  page lists the servers that establish contact with the console. also, the servers\nwhose credentials have been added in the console, but which are yet to initiate contact are also listed. the following\nstatuses of the servers based on the previously mentioned conditions are displayed:\n\u25cf announced\u2014server initiates contact with the console, however, the credentials of the server are not added to the\nconsole.\n\u25cf credentials added\u2014the credentials of the server are added in the console, however, the server has not initiated contact\nwith the console.\n\u25cf ready to discover\u2014the credentials of the server are added and the server has initiated contact.\nnote:  the appliance triggers a discovery job every 10 minutes to discover all the servers in the \'ready to discover\'\nstatus. however, if the discovery-approval policy in the appliance is set as \'manual,\' then the user should manually\ntrigger the discovery job for each server. for more information, see manage console preferences  on page 157\n\u25cf job submitted for discovery\u2014this status indicates that the discovery job is initiated either automatically or manually for\nthe server.\n\u25cf discovered\u2014the server is discovered and is listed on the all devices page.\nthe following tasks can be performed on the monitor  > server initiated discovery  page:\n1. import \u2014to import the server credentials:\na. click import .\nb. in the import from file wizard, click upload service tags file  to navigate and select the .csv file.\nto view a sample csv file of the server credentials, click download sample csv file .\nc. click finish\n2. discover \u2014to manually discover the servers in \'ready to discover\' status:\na. select the servers listed on the server-initiated discovery page which are in \'ready to discover\' status.\nb. click discover .\na discover job is triggered to discover the servers and post discovery these servers are listed on the all devices page.\n3. delete \u2014to delete the servers listed on the server-initiated discovery page:\na. select the servers on the server-initiated discovery page which are already discovered and listed on the all devices\npage.\nb. click delete.\nthe servers are deleted from the server-initiated discovery page.\nnote:  entries corresponding to discovered servers are automatically be purged after 30 days.\n4. export \u2014to export the server credentials in html, csv, or pdf formats:\na. select one or more servers on the sever-initiated discovery page.\nb. click export .\ndiscovering devices for monitoring or management 41\n\nc. in the export all wizard, select any of the following file formats: html, csv, and pdf.\nd. click finish . a job is created, and the data is exported to the selected location.\ncreate a device discovery job\nthe following steps describes how to initiate a device discovery job in openmanage enterprise to discover the devices in your\ndata center using the create discovery job wizard.\nnote:  to perform any tasks on openmanage enterprise, you must have necessary user privileges. see role and scope\nbased access control in openmanage enterprise on page 15.\n1. to initiate the create discovery job you can do one of the following steps:\n\u25cf click monitor  > discovery  > create .\n\u25cf alternatively, from the all devices page ( openmanage enterprise  > devices ), click the discovery  drop-down menu\nand click discover devices .\n2. in the create discovery job  dialog box, a default job name is populated. to change it, enter the discovery job name.\nby default, the dialog box enables you to define properties of similar devices at a time.\n\u25cf to include more devices or ranges to the current discovery job, click add. another set of the following fields is displayed\nwhere you can specify the device properties: type, ip/hostname/range, and settings.\nwarning:  a maximum of 8,000 devices can be managed by openmanage enterprise. hence, do not\nspecify large networks that have devices more than the maximum number of devices supported by\nopenmanage enterprise. it may cause the system to abruptly stop responding.\nnote:  when discovering a large number of devices, avoid creating multiple discovery jobs using individual ip address\nand instead use ip range of the devices.\n\u25cf to discover devices by importing ranges from the .csv file. see specify multiple devices by importing data from the .csv\nfile  on page 46.\n\u25cf to exclude certain devices, remove devices from being excluded, or to view the list of devices excluded from being\ndiscovered, see globally excluding device(s) from discovery results .\n3. from the device type  drop-down menu, to discover:\n\u25cf a server, select server . see specifying discovery mode for creating a server discovery job .\n\u25cf a chassis, select chassis . see specifying discovery mode for creating a chassis discovery job .\n\u25cf a dell emc storage device, or network switch, select dell storage , or networking switch . see specifying\ndiscovery mode for creating a storage, dell storage, and network switch discovery job .\n\u25cf to discover devices by using multiple protocols, select multiple . see specify discovery mode for creating a multiple\nprotocol discovery job  on page 51.\n4. in the  ip/hostname/range  box, enter the ip address, host name, or the range of ip address to be discovered or included.\nfor more information about the data you can enter in this field, click the i symbol.\nnote:\n\u25cf the range size is limited to 16,385 (0x4001).\n\u25cf ipv6 and ipv6 cidr formats too are supported.\n5. in the settings  section, enter the username and password of the protocol that is used for discovering the ranges.\n6. click additional settings , to select a different protocol, and change the settings.\n7. in the scheduling discovery job  section, run the job immediately or schedule for a later point of time. see schedule job\nfield definitions  on page 172.\n8. select enable trap reception from discovered idrac servers and mx7000 chassis  to enable the openmanage\nenterprise receive the incoming traps from the discovered servers and mx7000 chassis.\nnote:  enabling this setting will enable alerts on the idrac (if disabled), and set an alert destination for the\nopenmanage enterprise server\'s ip address. if there are specific alerts that need to be enabled, you must configure\nthese on the idrac by enabling the appropriate alert filers and snmp traps. for more information, see the idrac user\'s\nguide.\n9. select set community string for trap destination from application settings . this option is available only for the\ndiscovered idrac servers and mx7000 chassis.\n10. select the email when complete  check box, and then enter the email address that must receive notification about the\ndiscovery job status. if the email is not configured, the go to smtp settings  link is displayed. click the link, and configure\n42 discovering devices for monitoring or management\n\nthe smtp settings. see configure smtp, snmp, and syslog alerts  on page 116. if you select this but do not configure\nsmtp, the finish  button is not displayed to continue the task.\n11. click finish . the finish button is not displayed if the fields are incorrectly or incompletely filled.\na discovery job is created and run. the status is displayed on the job details  page.\nduring device discovery, the user account that is specified for the discovery range is verified against all available privileges that\nare enabled on a remote device. if the user authentication passes, the device is automatically onboarded or the device can be\nonboarded later with different user credentials. see onboarding devices  on page 43.\nnote:  during cmc discovery, the servers, and iom and storage modules (configured with ip and snmp set to "public"\nas community string), residing on cmc are also discovered and are onboarded. if you enable trap reception during cmc\ndiscovery, the openmanage enterprise is set as the trap destination on all the servers and not on the chassis.\nnote:  during cmc discovery, fn i/o aggregators in programmable mux (pmux) mode are not discovered.\nonboarding devices\nonboarding enables servers to be managed, rather than just be monitored.\n\u25cf if administrator-level credentials are provided during discovery, the servers are onboarded (the device status is displayed as\n"managed" in the all devices view).\n\u25cf if lower privileged credentials are provided during discovery, the servers are not onboarded (the status is displayed as\n"monitored" in the all devices view).\n\u25cf if the console is also set as a trap receiver on the servers then their onboarding status is indicated as "managed with alerts".\n\u25cf error : indicates an issue in onboarding the device.\n\u25cf proxied : available only for mx7000 chassis. indicates that the device is discovered through an mx7000 chassis and not\ndirectly.\nif you want to onboard devices with a different user account apart from the account specified for discovery, or re-attempt\nonboarding because of a failure in onboarding during discovery, do the following:\nnote:\n\u25cf all devices that have been onboarded through this wizard remain onboarded through this user account and is not\nsubstituted by the discovery user account during future discoveries against these devices.\n\u25cf for the already discovered devices, if the snmp trap destination is \'manually\' set in idrac as openmanage enterprise,\nthe alerts are received and processed by the appliance. however, the device\'s managed state displayed on the all\ndevices page remains the same as its initial discovered state of \'monitored,\' \'managed\' or \'managed with alerts.\'\n\u25cf the all devices page displays the managed state  of all the onboarded chassis as "managed" irrespective of which\nchassis user-role credentials were used at the time of onboarding. if the chassis was onboarded with credentials of a\n"read-only" user, then there may be a failure during update activities performed on chassis. hence, it is recommended to\nonboard chassis with credentials of a chassis administrator to perform all activities.\n\u25cf to perform any tasks on openmanage enterprise, you must have necessary user privileges. see role and scope based\naccess control in openmanage enterprise on page 15.\n1. from the openmanage enterprise  menu, under devices , click all devices .\na donut chart indicates status of all devices in the working pane. see the donut chart . the table lists the properties of\ndevices selected along with their following onboarding status:\n\u25cf error : device cannot be onboarded. try by logging in by using the recommended privileges. see role and scope based\naccess control in openmanage enterprise on page 15.\n\u25cf managed : device successfully onboarded, and can be managed by the openmanage enterprise console.\n\u25cf monitored : device does not have management option (such as the one discovered by using snmp).\n\u25cf managed with alerts : device is successfully onboarded, and the openmanage enterprise console has successfully\nregistered its ip address with the device as a trap destination during discovery.\n2. in the working pane, select a check box corresponding to the device(s), click more actions  > onboarding .\nensure that you select only the device types from the all devices page that are supported for onboarding. you can search\nfor suitable devices in the table by clicking advanced filters , and then select or enter onboarding status data in the filter\nbox.\nnote:  all devices that are discovered are not supported for onboarding and only idrac and cmc are supported.\nensure that you select onboarding option for the supported device type.\ndiscovering devices for monitoring or management 43\n\n3. in the onboarding  dialog box, enter the ws-man credentials\u2014username and password.\n4. in the connection settings  section:\na. in the retries  box, enter the number of repeated attempts that must be made to discover a server.\nb. in the timeout  box, enter the time after which a job must stop running.\nnote:  if the timeout value entered is greater than the current session expiry time, you are automatically logged\nout of openmanage enterprise. however, if the value is within the current session expiration timeout window, the\nsession is continued and not logged out.\nc. in the port  box, enter the port number that the job must use to discover.\nd. optional field. select enable common name (cn) check .\ne. optional field. select enable certificate authority (ca) check  and browse to the certificate file.\n5. click finish .\nnote:  the enable t\n\nroup .\n\u25cf click group actions  > create custom group  > static group  .\n2. in the create static group wizard  dialog box, enter a name and description (optional) for the group, and then select a\nparent group under which the new static group must be created.\nnote:  the static or dynamic group names and server configuration related names in openmanage enterprise must be\nunique (not case-sensitive). for example, name1  and name1  cannot be used at the same time.\n3. click next .\n4. from the group member selection dialog box, select the devices that must be included in the static group.\n5. click finish .\n54 manage devices and device groups\n\nthe static group is created and listed under the parent group in the left pane. the child groups are indented from its parent\ngroup.\ncreate a query device group\nquery groups are dynamic groups whose devices are defined by matching some user-specified criteria. devices in the group\nchange based on the result of devices that are discovered by using the query criteria. on the all devices page ( openmanage\nenteprise  > devices ), you can create query groups using the create query group wizard.\nnote:  to perform any tasks on openmanage enterprise, you must have necessary role-based user privileges and scope-\nbased operational access to the devices. see role and scope based access control in openmanage enterprise on page 15.\n1. to activate the create query group wizard, you can do one of the following:\n\u25cf under custom groups, either right click on query groups  or click the three dots vertical menu next to the query\ngroups, and then click create new query group.\n\u25cf click group actions  > create custom group  > query group .\n2. in the create query group wizard  dialog box, enter a name  and description (optional) for the group.\n3. click next .\n4. in the query criteria selection  dialog box, from the select existing query to copy drop-down menu, select a query, and\nthen select the other filter criteria. see select a query criteria  on page 55.\n5. click finish .\nthe query group is created and listed under the query group section in the left pane.\nselect a query criteria\ndefine filters while creating query criteria for:\n\u25cf generating customized reports. see creating reports  on page 134.\n\u25cf creating query-based device groups under the custom groups. see create a query device group  on page 55.\ndefine the query criteria by using two options:\n\u25cf select existing query to copy : by default, openmanage enterprise provides a list of built-in query templates that you can\ncopy and build your own query criteria. a maximum of 6 criteria (filters) can be used while defining a query. to add filters,\nyou must select from the select type  drop-down menu.\n\u25cf select type : build a query criteria from scratch by using attributes listed in this drop-down menu. items in the menu depend\non the devices monitored by openmanage enterprise. when a query type is selected, only appropriate operators such as\n=, >, <, and null are displayed based on the query type. this method is recommended for defining query criteria in building\ncustomized reports.\nnote:  when evaluating a query with multiple conditions, the order of evaluation is same as sql. to specify a particular\norder for the evaluation of the conditions, add or remove parenthesis when defining the query.\nnote:  when selected, the filters of an existing query criteria is copied only virtually to build a new query criteria. the\ndefault filters associated with an existing query criteria is not changed. the definition (filters) of a built-in query criteria is\nused as a starting point for building a customized query criteria. for example:\n1. query1  is a built-in query criteria that has the following predefined filter: task enabled=yes .\n2. copy the filter properties of query1 , create query2 , and then customize the query criteria by adding another filter: task\nenabled=yes  and (task type=discovery) .\n3. later, open query1 . its filter criteria still remains as task enabled=yes .\n1. in the query criteria selection  dialog box, select from the drop-down menu based on whether you want to create a query\ncriteria for query groups or for report generation.\n2. add or remove a filter by clicking the plus or dustbin symbol respectively.\n3. click finish .\na query criteria is generated and saved in the list of existing queries. an audit log entry is made and displayed in the audit\nlogs list. see monitor audit logs  on page 120.\nrelated information\nmanaging the device configuration compliance  on page 104\nedit a configuration compliance baseline  on page 108\nmanage devices and device groups 55\n\nremove a configuration compliance baseline  on page 110\nedit a static group\non the all devices page ( openmanage enterprise  > devices ) the existing static groups can be renamed, repositioned, and\nthe devices in the static group can be added or deleted using the edit static group wizard.\nnote:  to perform any tasks on openmanage enterprise, you must have necessary role-based user privileges and scope-\nbased operational access to the devices. see role and scope based access control in openmanage enterprise on page 15.\n1. right-click on the static group or click on the three vertical dots menu next to the static group, and then click edit  to\nactivate the edit static group wizard.\n2. in the edit static group wizard, you can edit the name, description, and parent group.\n3. click next .\n4. in the group member selection screen, you can check or uncheck the devices to include or exclude them from the static\ngroup.\n5. click finish .\nthe changes made to the static group are implemented.\nedit a query group\non the all devices page ( openmanage enterprise  > all devices ), the existing query group can be renamed, repositioned, and\nthe query criteria based on which the devices are included in the query group can be edited using the edit query group wizard.\nto perform any tasks on openmanage enterprise, you must have necessary role-based user privileges and scope-based\noperational access to the devices. see role and scope based access control in openmanage enterprise on page 15.\n1. under custom groups, right-click on the query group or click on the three vertical dots menu next to the query group\nand then click edit .\n2. in the edit query group wizard, make changes to the name, description as needed.\n3. click next .\n4. in the query criteria selection dialog box, from the select existing query to copy  drop-down menu, select a query, and\nthen select the other filter criteria.\n5. click finish .\nthe changes made to the query group are implemented.\nrename a static or query group\nto rename a static or query group on the all devices page ( openmanage enterprise  > devices ):\n1. under custom groups , right-click a static or query group or click on the three dots next to the group you want to\nrename, and then click rename . or, select a group and then click group actions  > rename group .\n2. in the rename group  dialog box, enter a new name for the group.\n3. click finish\nthe updated name is listed in the left pane.\ndelete a static or query device group\non the all devices page ( openmanage enterprise  > devices ), you can delete an existing static or query group as follows:\nto perform any tasks on openmanage enterprise, you must have necessary role-based user privileges and scope-based\noperational access to the devices. see, role and scope based access control in openmanage enterprise on page 15.\nnote:  this procedure is applicable only for deleting a static or query group, however the devices in the group would not be\ndeleted from the all devices page. to remove devices from openmanage enterprise, see delete devices from openmanage\nenterprise  on page 60.\n56 manage devices and device groups\n\n1. under custom groups , right-click the static or query group or click on the three dots vertical menu next to the group\nand then click delete . or, select the group you want to delete, and then from the group actions  drop-down menu and\nclick delete group .\n2. when prompted, click yes.\nthe group is deleted from the custom groups.\nclone a static or query group\nthe existing static or query groups can be cloned and added to the custom groups.\nnote:  to perform any tasks on openmanage enterprise, you must have necessary role-based user privileges and scope-\nbased operational access to the devices. see role and scope based access control in openmanage enterprise on page 15\n1. right-click on the static or query group or click on the tree dots vertical menu next to the static or query group, and then\nclick clone .\n2. in the clone group  dialog box, enter a name and description for the group. additionally for static group, select a parent\ngroup under which the cloned static must be created.\n3. click finish .\nthe cloned group is created and listed under the parent group in the left pane.\nadd devices to a new group\nyou can create a new group and add devices to it from the device list table available on the all devices page.\nto perform any tasks on openmanage enterprise, you must have necessary role-based user privileges and scope-based\noperational access to the devices. see role and scope based access control in openmanage enterprise on page 15.\n1. from the openmanage enterprise  menu, click devices .\nall devices page is displayed.\n2. in the devices list, select the check box corresponding to the device(s), and then click group actions  > add to new\ngroup .\na. in the add devices to new group wizard  dialog box, enter the name , description (optional), and select the parent\ngroup  under which the new child group will be created. for more information about groups, see device groups .\nb. to add more devices to the group, click next . else, go to step 3.\n3. in the group member selection dialog box, select more devices from the add devices list.\nafter you select devices under the all devices  tab, the selected devices are listed under all selected devices .\n4. click finish .\na new group is created and the devices are added to the selected group.\nnote:  for creating groups or adding devices to a group, you must follow the parent-child relationship of groups. see\ndevice groups .\nadd devices to existing group\nyou can add devices to an existing group from the device list table available on the all devices page.\nnote:  to perform any tasks on openmanage enterprise, you must have necessary role-based user privileges and scope-\nbased operational access to the devices. see role and scope based access control in openmanage enterprise on page 15.\n1. from the openmanage enterprise  menu, click devices .\nall devices page is displayed.\n2. in devices list, select the check box corresponding to the device(s), and then click group actions  > add to existing\ngroup .\n3. in the add selected devices to existing group  dialog box, enter or select data. for more information about groups, see\ndevice groups .\n4. click finish .\nthe devices are added to the selected existing group.\nnote:  for creating groups or adding devices to a group, you must follow the parent-child relationship of groups. see\ndevice groups .\nmanage devices and device groups 57\n\nrefresh health on group\nthe following steps describe how you can refresh the health and online status of a selected group.\nnote:\n\u25cf to perform any tasks on openmanage enterprise, you must have necessary role-based user privileges and scope-based\noperational access to the devices. see role and scope based access control in openmanage enterprise on page 15.\n\u25cf for the in-band devices discovered using the esxi and linux operating systems, the health state (\n ) is displayed as\nunknown (\n  ).\n1. go to the all devices page by clicking openmanage enterprise  > devices .\n2. on the left pane, select the group on which you want to refresh the health.\nafter selection of the group, the devices\' list will list the selected group\'s devices.\n3. click the refresh heatlh drop-down menu and then click refresh health on group . the health wizard is displayed.\n4. in the health wizard, job name  displays the appliance-generated job name for the refresh-health task. if needed, you can\nchange the job name.\n5. the select group  drop down will show the group that you had selected.\n6. from the scheduling drop down, you can select one of the following options:\na. run now \u2014 to immediately run the refresh health on the selected group.\nb. run later \u2014 you can select run later and then select the date and time when the refresh health job on the group will\nrun.\nc. run on schedule \u2014 you can select this option then choose the daily or weekly and select a time if you want to refresh\nthe health on the group on daily or weekly basis at a particular time.\na job to refresh the health and online status of the group is created. you can view the job details on the jobs page\n(openmanage enterprise  > monitor  > jobs ).\nall devices page - devices list\nthe list of devices displays the device properties such as ip address and service tag. you can select a maximum of 25 devices\nper page and navigate the pages to select more devices and perform tasks. for more information about the tasks you can\nperform on the all devices page, see all devices page \u2014 device list actions  on page 59.\nnote:  by default, the devices list displays all the devices considered while forming the donut chart. to view a list of\ndevices that belong to a specific health status, click the corresponding color band in the donut chart, or click the health\nstatus symbol. devices that belong only to the selected category are listed.\n\u25cf health state  indicates the working state of the device. the health statuses\u2014normal, critical, and warning\u2014are identified\nby respective color symbols. see device health statuses  on page 38\n\u25cf power state  indicates if the device is turned on or off\n\u25cf connection state  indicates whether or not the device is connected to openmanage enterprise\n\u25cf name  indicates device name.\n\u25cf ip address  indicates the ip address of the idrac installed on the device\n\u25cf identifier  indicates the service tag of the device\n\u25cf model  indicates the model number\n\u25cf type  indicates the type of device\u2014server, chassis, dell storage, and networking switch\n\u25cf chassis name  indicates chassis name\n\u25cf slot name  indicates the slot name for the chassis devices\n\u25cf managed state  column indicates if the device is monitored, managed, or is proxied. see discovering devices for monitoring\nor management  on page 39.\nto filter data in the table, click advanced filters  or the filter symbol. to export data to html, csv, or pdf file format, click\nthe export symbol in the upper-right corner.\nnote:  in the devices list, click the device name or ip address to view device configuration data, and then edit. see view\nand configure individual devices  on page 64.\nnote:  the working pane displays the donut chart of the selected device group. by using the donut chart, you can view\nthe list of devices that belongs to other health statuses in that group. to view devices of other health status, click the\n58 manage devices and device groups\n\ncorresponding color band on the donut chart. the data in the table changes. for more information about using the donut\nchart, see donut chart .\nall devices page \u2014 device list actions\non the all devices page ( openmanage enterprise  > devices ) devices list, you can perform various device actions.\nthe action buttons are context sensitive to both the group selection from the tree on the left and also for the devices selected\nin the grid. so if the action is group related, for example group actions such as \'run inventory on group\' roup and \'refresh\nhealth on group\' \u2014 will default to the selected group. all device actions will default to the selected devices. however, few\nactions such as discovery are always applicable without any selection. also, the type of actions available per device depend on\nthe type of device selected.\nnote:  to perform any tasks on openmanage enterprise, you must have necessary role-based user privileges and scope-\nbased operational access to the devices. see role and scope based access control in openmanage enterprise on page 15.\n\u25cf from group actions  drop-down, you can:\n\u25cb create custom device groups. see create a custom group (static or query)  on page 54.\n\u25cb create static groups. see create a static device group  on page 54.\n\u25cb create query groups. see create a quer\n\ndeletion or reduction\nof the expanded disk space is not supported. to\nremove a newly added disk or to reverse the increase\nin size of an existing disk you must revert to prior vm\nsnapshot.\n\u25cf if the initial scan detects no unallocated space, then\nallocate additional disk space or disks to the console on\nyour hypervisor and rescan.\n\u25cf scanning and allocation of disk space is limited to a\nmaximum of four disks.\nenable field service debug (fsd) mode select enable field service debug (fsd) mode  for console\ndebugging. for more information, see field service debug\nworkflow  on page 174.\n28 get started with openmanage enterprise\n\ntable 7. text user interface options (continued)\noptions descriptions\nrestart services select restart services  with the following options to restart\nthe services and networking:\n\u25cf restart all services\n\u25cf restart networking\nsetup debug logging select setup debug logging  using the following options :\n\u25cf enable debug logs \u2014to collect the debug logs of\nthe application monitoring tasks, events, and the task\nexecution history.\n\u25cf disable debug logs \u2014to disable the debug logs.\n\u25cf enable scp retention \u2014to collect the template .xml\nfiles.\n\u25cf disable scp retention \u2014to disable the scp retention.\nyou can download the debug logs by clicking monitor  > audit\nlogs  > export  > export console logs  in openmanage\nenterprise.\nchange keyboard layout select change keyboard layout to change the keyboard\nlayout if needed.\nreboot the appliance select reboot the appliance  to restart the appliance.\nnote:  after running a command to restart the services,\nthe tui may display the following message: nmi\nwatchdog: bug: soft lockup - cpu#0 stuck\nfor 36s! [java:14439].\nthe soft lockup issue likely occurs as a result of the\nhypervisor being overloaded. in such situations, it is\nrecommended to have at least 16 gb of ram and cpu\nof 8000 mhz reserved to the openmanage enterprise\nappliance. it is also recommended that the openmanage\nenterprise appliance be restarted when this message is\ndisplayed.\nconfigure openmanage enterprise\nif you are logging in to openmanage enterprise for the first time, the welcome to openmanage enterprise  page is displayed,\nwhich allows setting of time (either manually or using ntp time synchronization) and proxy configurations.\n1. to configure the time manually do the following in the time configuration  section:\n\u25cf use the timezone  drop down menu to select an appropriate timezone.\n\u25cf in the date  box, enter or select a date.\n\u25cf in the time  box, fill the time.\n\u25cf click apply  to save the settings.\n2. if you want to use the ntp server for time synchronization, do the following in the time configuration  section:\nnote:  when the ntp server settings are updated, the currently logged in users are automatically logged out from their\nopenmanage enterprise sessions.\n\u25cf select the use ntp check box.\n\u25cf enter the ip address or hostname in primary ntp server address  and secondary ntp server address  (optional) for\ntime synchronization\n3. if you want to set proxy server for external communication, in the proxy configuration section do the following:\n\u25cf select the enable http proxy settings  check box.\n\u25cf enter the proxy address .\n\u25cf enter the port number for the proxy server.\nget started with openmanage enterprise 29\n\n\u25cf if the proxy server requires credentials to log in, select the  enable proxy authentication  check box and enter the user\nname and password.\n\u25cf select the ignore certificate validation  check box if the configured proxy intercepts ssl traffic and does not use\na trusted third-party certificate. using this option will ignore the built-in certificate checks used for the warranty and\ncatalog synchronization.\n4. click apply  to save the settings.\nnote:  for information about supported browsers, see the openmanage enterprise support matrix  available on the support\nsite.\nrecommended scalability and performance settings\nfor optimal usage of openmanage enterprise\nthe following table lists the performance parameters of the supported features in openmanage enterprise. to ensure an optimal\nperformance of openmanage enterprise, dell emc recommends to run the tasks at the specified frequency on the maximum\nnumber of devices that are recommended per task.\ntable 8. scalability and performance considerations of openmanage enterprise \ntasks recommended frequency\nof running the tasks\ntasks whether precanned? maximum devices that are\nrecommended per task.\ndiscovery once a day for environment\nwith frequent network\nchanges.\nno 10,000/task\ninventory openmanage enterprise\nprovides a precanned task\nthat automatically refreshes\ninventory once a day.\nyes. you can disable this\nfeature.\ndevices that are monitored by\nopenmanage enterprise.\nwarranty openmanage enterprise\nprovides a precanned task\nthat automatically refreshes\nwarranty once a day.\nyes. you can disable this\nfeature.\ndevices that are monitored by\nopenmanage enterprise.\nhealth poll every one hour yes. you can change the\nfrequency.\nnot applicable\nfirmware/driver update need-basis 150/task\nconfiguration inventory need-basis 1500/baseline\nsupported protocols and ports in openmanage\nenterprise\nsupported protocols and ports on management stations\ntable 9. openmanage enterprise supported protocols and ports on management stations \nport\nnumber\nprotocol port type maximum\nencryption\nlevel\nsource direction destination usage\n22 ssh tcp 256-bit management\nstation\nin openmanage\nenterprise\nappliance\n\u25cf required for\nincoming only if\nfsd is used.\nopenmanage\nenterprise\n30 get started with openmanage enterprise\n\ntable 9. openmanage enterprise supported protocols and ports on management stations (continued)\nport\nnumber\nprotocol port type maximum\nencryption\nlevel\nsource direction destination usage\nadministrator must\nenable only if\ninteracting with\nthe dell emc\nsupport staff.\n25 smtp tcp none openmanage\nenterprise\nappliance\nout management\nstation\n\u25cf to receive\nemail alerts\nfrom openmanage\nenterprise.\n53 dns udp/tcp none openmanage\nenterprise\nappliance\nout management\nstation\n\u25cf for dns queries.\n68 / 546\n(ipv6)\ndhcp udp/tcp none openmanage\nenterprise\nappliance\nout management\nstation\n\u25cf network\nconfiguration.\n80* http tcp none management\nstation\nin openmanage\nenterprise\nappliance\n\u25cf the web gui\nlanding page. this\nwill redirect a user\nto https (port\n443).\n123 ntp tcp none openmanage\nenterprise\nappliance\nout ntp server \u25cf time\nsynchronization (if\nenabled).\n137, 138,\n139, 445\ncifs udp/tcp none idrac/ cmc in openmanage\nenterprise\nappliance\n\u25cf to upload\nor download\ndeployment\ntemplates.\n\u25cf to upload tsr and\ndiagnostic logs.\n\u25cf to download\nfirmware/driver\ndups, and fsd\nprocess.\n\u25cf boot to network\niso.\nopenmanage\nenterprise\nappliance\nout cifs share \u25cf to import\nfirmware/driver\ncatalogs from\ncifs share.\n111, 2049\n(default)\nnfs udp/tcp none openmanage\nenterprise\nappliance\nout external nfs\nshare\n\u25cf to download\ncatalog and dups\nfrom the nfs\nshare for firmware\nupdates.\n\u25cf for manual\nconsole upgrade\nfrom network\nshare.\n162* snmp udp none management\nstation\nin/out openmanage\nenterprise\nappliance\n\u25cf event reception\nthrough snmp.\nthe direction is\n\'outgoing\' only if\nget started with openmanage enterprise 31\n\ntable 9. openmanage enterprise supported protocols and ports on management stations (continued)\nport\nnumber\nprotocol port type maximum\nencryption\nlevel\nsource direction destination usage\nusing the trap\nforward policy.\n443\n(default)\nhttps tcp 128-bit ssl management\nstation\nin/out openmanage\nenterprise\nappliance\n\u25cf web gui.\n\u25cf to download\nupdates and\nwarranty\ninformation from\ndell.com. 256-bit\nencryption is\nallowed when\ncommunicating\nwith the\nopenmanage\nenterprise by\nusing https for\nthe web gui.\n\u25cf server-initiated\ndiscovery.\n514 syslog tcp none openmanage\nenterprise\nappliance\nout syslog server \u25cf to send alert\nand audit log\ninformation to\nsyslog server.\n3269 ldaps tcp none openmanage\nenterprise\nappliance\nout management\nstation\n\u25cf ad/ ldap login\nfor global catalog.\n636 ldaps tcp none openmanage\nenterprise\nappliance\nout management\nstation\n\u25cf ad/ ldap login\nfor domain\ncontroller.\n*port can be configured up to 499 excluding the port numbers that are already allocated.\nsupported protocols and ports on managed nodes\ntable 10. openmanage enterprise supported protocols and ports on the managed nodes \nport\nnumber\nprotocol port\ntype\nmaximum\nencryption\nlevel\nsource directio\nn\ndestinatio\nn\nusage\n22 ssh tcp 256-bit openmanage\nenterprise\nappliance\nout managed\nnode\n\u25cf for the linux os, windows, and\nhyper-v discovery.\n161 snmp udp none openmanage\nenterprise\nappliance\nout managed\nnode\n\u25cf for snmp queries.\n162* snmp udp none openmanage\nenterprise\nappliance\nin/ out managed\nnode\n\u25cf send and receive snmp traps.\n443 proprietar\ny/ ws-\nman/\nredfish\ntcp 256-bit openmanage\nenterprise\nappliance\nout managed\nnode\n\u25cf discovery and inventory of\nidrac7 and later versions.\n\u25cf for the cmc management.\n32 get started with openmanage enterprise\n\ntable 10. openmanage enterprise supported protocols and ports on the managed nodes (continued)\nport\nnumber\nprotocol port\ntype\nmaximum\nencryption\nlevel\nsource directio\nn\ndestinatio\nn\nusage\n623 ipmi/\nrmcp\nudp none openmanage\nenterprise\nappliance\nout managed\nnode\n\u25cf ipmi access through lan.\n69 tftp udp none cmc in manageme\nnt station\n\u25cf for updating cmc firmware.\n* port can be configured up to 499 excluding the port numbers that are already allocated.\nnote:  in an ipv6 environment, you must enable ipv6 and disable ipv4 in the openmanage enterprise appliance to ensure\nall the features work as expected.\nuse case links for the supported protocols and ports\nin openmanage enterprise\ntable 11. use case links for the supported protocols and ports in openmanage enterprise \nuse case url\nupgrade openmanage enterprise appliance https://downloads.dell.com/openmanage_enterprise/\naccess device warranty https://apigtwb2c.us.dell.com/prod/sbil/eapi/v5/asset-\nentitlements\nupdate catalogs https://downloads.dell.com/catalog/\npush new alert notifications using the openmanage mobile\napplication\nhttps://openmanagecloud.dell.com\nget started with openmanage enterprise 33\n\nopenmanage enterprise graphical user\ninterface overview\non the openmanage enterprise graphical user interface (gui), you can use menu items, links, buttons, panes, dialog boxes,\nlists, tabs, filter boxes, and pages to navigate between pages and complete device management tasks. features such as devices\nlist, donut charts, audit logs, openmanage enterprise settings, system alerts, and firmware/driver update are displayed at\nmore than one place. it is recommended that you familiarize yourself with the gui elements for easily and effectively using\nopenmanage enterprise to manage your data center devices.\n\u25cf a\u2014the openmanage enterprise  menu, on all the pages of openmanage enterprise, provides links to features that enable\nadministrators view the dashboard ( home ), manage devices ( devices ), manage firmware/driver baselines, templates,\nand configuration compliance baselines ( configuration ), create and store alerts ( alerts ), and then run jobs, discover,\ncollect inventory data, and generate reports ( monitor ). you can also customize different properties of your openmanage\nenterprise ( application settings ). click the pin symbol in the upper-right corner to pin the menu items so they appear on\nall the openmanage enterprise pages. to unpin, click the pin symbol again.\n\u25cf b\u2014the dashboard symbol. click to open the dashboard page from any page of openmanage enterprise. alternately, click\nhome . see dashboard .\n\u25cf c\u2014the donut chart gives a snapshot of health status of all the devices monitored by openmanage enterprise. enables you\nto quickly act upon the devices that are in critical state. each color in the chart represents a group of devices having a\nparticular health state. click respective color bands to view respective devices in the devices list. click the device name or ip\naddress to view the device properties page. see view and configure individual devices  on page 64.\n\u25cf d\u2014the symbols used to indicate the device health state. see device health statuses  on page 38.\n\u25cf e\u2014in the search everything  box, enter about anything that is monitored and displayed by openmanage enterprise to view\nthe results such as device ip, job name, group name, firmware/driver baseline, and warranty data on all the devices in your\nscope as defined by the scope based access control (sbac). you cannot sort or export data that is retrieved by using the\nsearch everything feature. on individual pages or dialog boxes, enter or select from the advance filters  section to refine\nyour search results.\n\u25cb the following operators are not supported: +, -, and ".\n\u25cf f\u2014number of openmanage enterprise jobs currently in the queue. jobs that are related to discovery, inventory, warranty,\nfirmware and/or drivers update, and so on. click to view the status of jobs run under health, inventory, and the report\ncategory on the job details page. to view all the events, click all jobs . see using jobs for device control  on page 122. click\nto refresh.\n5\n34 openmanage enterprise graphical user interface overview\n\n\u25cf g\u2014the number of events generated in the alerts log. also, based on your settings to whether or not view the\nunacknowledged alerts, the number of alerts in this section varies. by default, only the unacknowledged alerts are displayed.\nto hide or unhide the acknowledged alerts, see customize the alert display  on page 158. deleting the alerts reduces the\ncount. for information about symbols that are used to indicate severity statuses, see device health statuses  on page 38.\nclick a severity symbol to view all events in that severity category on the alerts page. to view all the events, click all\nevents . see managing device alerts .\n\u25cf h\u2014total number of device warranties in critical (expired) and in warning (expiring soon) statuses. see managing device\nwarranty .\n\u25cf i\u2014username of the user who is currently logged in. pause the pointer over the username to view the roles that are assigned\nto the user. for more information about the role-based users, see role and scope based access control in openmanage\nenterprise on page 15. click to log out, and then log in as a different user.\n\u25cf j\u2014currently, the context-sensitive help file is displayed only for the page you are on, and not the home portal pages. click\nto view task-based instructions to effectively use links, buttons, dialog boxes, wizards, and pages in openmanage enterprise.\n\u25cf k\u2014click to view the current version of openmanage enterprise installed on the system. click licenses  to read through\nthe message. click appropriate links to view and download openmanage enterprise-related open-source files, or other\nopen-source licenses.\n\u25cf l\u2014click the symbol to pin or unpin the menu items. when unpinned, to pin the menu items, expand the openmanage\nenterprise  menu and click the pin symbol.\ndata about items that are listed in a table can be comprehensively viewed, exported in total, or based on selected items.\nsee export all or selected data  on page 63. when displayed in blue text, in-depth information about items in a table can be\nviewed and updated, which either opens in the same window or on a separate page. tabulated data can be filtered by using the\nadvanced filters  feature. the filters vary based on the content you view. enter or select data from the fields. incomplete text\nor numbers will not display the expected output. data matching the filter criteria is displayed in the list. to remove filters, click\nclear all filters .\nto sort data in a table, click the column title. you cannot sort or export data that is retrieved by using the search everything\nfeature.\nsymbols are used to identify major main items, dashboard, status of device health, alert category, firmware and driver\ncompliance status, connection state, power status, and others. click the forward and backward buttons of the browser to\nnavigate between pages on openmanage enterprise. for information about supported browsers, see the dell emc openmanage\nenterprise support matrix  available on the support site.\nwhere appropriate, the page is split into left, working, and right panes to simplify the task of device management. where\nnecessary, online instructions and tool-tips are displayed when the pointer is paused over a gui element.\npreview a'
+===================================== 1 failed in 7.41s =====================================
+
+Sudhish Singh@LAPTOP-I14VJ72B MINGW64 /d/AI_Projects/Agent_Local_LLM_Hybrid_Framework (feature/alhf-foundation-layer)
+$
